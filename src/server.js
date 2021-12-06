@@ -13,16 +13,70 @@ app.get("/", function (req, res) {
     res.send("Prueba")
 })
 
-/* PRUEBA 
-app.post("/contacto", function(req,res) {
-    const {nombre,correo,mensaje} = req.body;
-    const contact = {name : nombre, email: correo, mensj: mensaje};
-    contactos.push(contact);
-    console.log(contactos);
-    res.send({estado: "ok", msg : "Mensaje recibido"})
-})
-*/
+/**
+ * API Rest Modulo de Login
+ * Descripcion: Indica el ingreso de los usuarios a la plataforma.
+ * Ruta: /login
+ * Metodo: POST
+ * Headers:"Content-Type: application/json"
+ * Datos de entrada: { "usuario" : 24526698, "password" : "Pablo102030" }
+ * Respuesta: { "codigo" : "200", "descripcion" : "Credenciales exitosas"}
+ */
 
+app.post("/login", function(req, res) {
+    res.send("Página de Login")
+})
+
+
+/**
+ * API Rest Modulo de registro de usuarios
+ * Descripcion: Registra los usuarios a la plataforma
+ * Ruta: /registrarUsuario
+ * Metodo: POST
+ * Headers:"Content-Type: application/json"
+ * Datos de entrada: {
+        "numero_documento":"24526698",
+        "nombre":"Pedro",
+        "apellido":"Lopez",
+        "perfil":2,
+        "celular":"31098442945",
+        "email":"pedro.lopez@gmail.com",
+        "password":"Pedro102030"
+    }
+ * Respuesta: {
+        "codigo": "200",
+        "descripcion": "Usuario registrado exitosamente"
+    }
+ */
+
+app.post("/registrarUsuario", function(req, res) {
+    res.send("Página de registro de usuario")
+})
+
+/**
+ * API Rest Modulo de registro de órdenes
+ * Descripcion: Registra los usuarios a la plataforma
+ * Ruta: /registrarOrden
+ * Metodo: POST
+ * Headers:"Content-Type: application/json"
+ * Datos de entrada: {
+        "numero_documento":"24526698",
+        "nombre":"Pedro",
+        "apellido":"Lopez",
+        "perfil":2,
+        "celular":"31098442945",
+        "email":"pedro.lopez@gmail.com",
+        "password":"Pedro102030"
+    }
+ * Respuesta: {
+        "codigo": "200",
+        "descripcion": "Usuario registrado exitosamente"
+    }
+ */
+
+app.post("/registrarOrden", function(req, res) {
+    res.send("Página de registro de usuario")
+})
 
 
 app.listen(5000, () => {
