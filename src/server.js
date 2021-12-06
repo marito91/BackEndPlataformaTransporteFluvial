@@ -10,5 +10,9 @@ app.use(express.urlencoded({ extended: true })); // Codifica la informacion que 
 
 
 app.get("/", function (req, res) {
-    res.send("Bienvenidos al mundo dev!!")
+    res.send("Prueba")
+})
+
+app.listen(5000, () => {
+    console.log("Servidor escuchando en el puerto 5000")
 })
