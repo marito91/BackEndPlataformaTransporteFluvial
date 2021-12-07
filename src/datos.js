@@ -196,7 +196,6 @@ Body Request:
 
 Body Response:
 {
- 
   "nombre_origen":"Puerto_Carreño",
   "nombre_destino":"Puerto_Nariño",
   "distancia":120
