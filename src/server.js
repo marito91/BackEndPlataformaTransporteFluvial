@@ -3,6 +3,7 @@
 const express = require("express");
 const cors = require("cors"); 
 //const { productos } = require("./datos");
+const { costo } = require("./datos");
 const app = express();
 app.use(cors()); // Middleware CORS
 app.use(express.json()) // Middleware convertir json
@@ -250,8 +251,11 @@ app.get("/editarCostoMilla", function(req, res) {
     }
  */
 
-app.get("/verCostoMilla", function(req, res) {
-    res.send("Indica el valor del costo de milla")
+app.get("/verCostoMilla/:id", function(req, res) {
+    const id = req.params.id;
+    const valor = costo.find( c => c.id.toLowerCase() === id.toLowerCase());
+    res.send(valor);
+    //res.send("Indica el valor del costo de milla")
 })
 
 

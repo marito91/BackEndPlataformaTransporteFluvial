@@ -7,7 +7,9 @@ Headers:
 Body Request:
 
 Body Response:
-[
+*/
+
+const usuarios = [
    {
       "numero_documento":"24526698",
       "nombre":"Pedro",
@@ -42,6 +44,10 @@ Body Response:
    }
 ]
 
+exports.usuarios = usuarios;
+
+/*
+
 Method: GET 
 Route: /listarPuerto
 Headers: 
@@ -50,7 +56,9 @@ Headers:
 Body Request:
 
 Body Response:
-[
+*/
+
+const puertos = [
    {
       "id_puerto":1,
       "nombre":"Puerto_Carreño"
@@ -149,6 +157,9 @@ Body Response:
    }
 ]
 
+exports.puertos = puertos;
+
+/*
 Method: GET 
 Route: /listarOrdenDetalle/?id_orden=1002
 Headers: 
@@ -157,7 +168,9 @@ Headers:
 Body Request:
 
 Body Response:
-{
+*/
+
+const ordenDetalle = {
   "id_orden":1002,
   "fecha_orden":"2021-10-13 10:21:44",
   "nombre_contenedor":"FFA5893",
@@ -173,20 +186,33 @@ Body Response:
   "costo": 1520000
 }
 
+exports.ordenDetalle = ordenDetalle;
 
+/*
 Method: GET 
 Route: /verCostoMilla
 Headers: 
 "Content-Type: application/json"
 
-Body Request:
+//Body Request:
 
-Body Response:
-{
-  "valor":124000
-}
+//Body Response:
+*/
+
+const costo = [{
+    "id":"a", 
+    "valor":124000
+},{
+    "id":"b", 
+    "valor":256000
+},{
+    "id":"c", 
+    "valor":320000
+}]
+exports.costo = costo;
 
 
+/*
 Method: GET 
 Route: /listarDistanciaPuerto/?origen=Puerto_Carreño&destino=Puerto_Nariño
 Headers: 
@@ -195,12 +221,16 @@ Headers:
 Body Request:
 
 Body Response:
-{
+*/
+const distanciaPuertos = {
   "nombre_origen":"Puerto_Carreño",
   "nombre_destino":"Puerto_Nariño",
   "distancia":120
 }
 
+exports.distanciaPuertos = distanciaPuertos;
+
+/*
 Method: GET 
 Route: /listarOrden
 Headers: 
@@ -209,7 +239,9 @@ Headers:
 Body Request:
 
 Body Response:
-[
+*/
+
+const ordenes = [
    {
       "id_orden":1001,
 	  "fecha_orden":"2021-10-12 14:30:25",
@@ -236,14 +268,18 @@ Body Response:
    }
 ]
 
+exports.ordenes = ordenes;
 
+/*
 Method: POST 
 Route: /registrarUsuario
 Headers: 
 "Content-Type: application/json"
 
 Body Request:
-{
+*/
+
+const registroUsuario = {
   "numero_documento":"24526698",
   "nombre":"Pedro",
   "apellido":"Lopez",
@@ -253,81 +289,119 @@ Body Request:
   "password":"Pedro102030"
 }
 
-Body Response:
-{
+exports.registroUsuario = registroUsuario;
+
+// Body Response:
+
+const usuarioRegistrado = {
   "codigo": "200",
   "descripcion": "Usuario registrado exitosamente"
 }
 
+exports.usuarioRegistrado = usuarioRegistrado;
+
+/*
 Method: POST 
 Route: /registrarPuerto
 Headers: 
 "Content-Type: application/json"
 
 Body Request:
-{
+*/
+
+const registroPuerto = {
 	  "nombre_puerto_origen":"Puerto_Virginia",
 	  "nombre_puerto_destino":"Puerto_Carreño",
 	  "distancia": 1024
 }
 
-Body Response:
-{
+exports.registroPuerto = registroPuerto;
+
+// Body Response:
+
+const puertoRegistrado = {
   "codigo": "200",
   "descripcion": "Puerto registrado exitosamente",
   "id_puerto":21,
 }
 
+exports.puertoRegistrado = puertoRegistrado;
+
+/*
 Method: POST 
 Route: /editarCostoMilla
 Headers: 
 "Content-Type: application/json"
 
 Body Request:
-{
+*/
+
+const costoMilla = {
 	  "valor": 181000
 }
 
-Body Response:
-{
+exports.costoMilla = costoMilla;
+
+//Body Response:
+
+const costoUpdate = {
   "codigo": "200",
   "descripcion": "Valor milla actualizado exitosamente"
 }
 
+exports.costoUpdate = costoUpdate;
+
+/*
 Method: POST 
 Route: /editarOrden
 Headers: 
 "Content-Type: application/json"
 
 Body Request:
-{
+*/
+
+const editarOrden = {
 	  "id_orden": 1004,
 	  "estado_orden": "Finalizada"
 }
 
-Body Response:
-{
+exports.editarOrden = editarOrden;
+
+// Body Response:
+
+const ordenUpdate = {
   "codigo": "200",
   "descripcion": "Orden actualizada exitosamente"
 }
 
+exports.ordenUpdate = ordenUpdate;
+
+/*
 Method: POST 
 Route: /login
 Headers: 
 "Content-Type: application/json"
 
 Body Request:
-{
+*/
+
+const login = {
 	  "usuario": 24526698,
 	  "password": "Pablo102030"
 }
 
-Body Response:
-{
+exports.login = login;
+
+// Body Response:
+
+const loginUpdate = {
   "codigo": "200",
   "descripcion": "credenciales exitosas"
 }
 
+exports.loginUpdate = loginUpdate
+
+/*
 Method: GET 
 Route: /listarOrden/?estado=Finalizada
 Headers: 
@@ -336,7 +410,8 @@ Headers:
 Body Request:
 
 Body Response:
-[
+*/
+const estados = [
    {
       "id_orden":1001,
 	  "fecha_orden":"2021-10-12 14:30:25",
@@ -355,7 +430,9 @@ Body Response:
    },
 ]
 
+exports.estados = estados;
 
+/*
 Method: GET 
 Route: /listarPuertoDistancia
 Headers: 
@@ -364,7 +441,9 @@ Headers:
 Body Request:
 
 Body Response:
-[
+*/
+
+const distancias = [
    {
       "nombre_puerto_origen":"Puerto_Carreño",
 	  "nombre_puerto_destino":"Puerto_Nariño",
@@ -916,4 +995,5 @@ Body Response:
 	  "distancia":175
    }
 ]
- */
+
+exports.distancias = distancias;
