@@ -3,7 +3,9 @@
 const express = require("express");
 const cors = require("cors"); 
 //const { productos } = require("./datos");
-const { costo } = require("./datos");
+const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, newOrden, registroPuerto, 
+        puertoRegistrado, ordenDetalle, estados, puertos, distanciaPuertos, costoMilla, costoUpdate, costo, 
+        usuarios, ordenes, editarOrden, ordenUpdate, distancias } = require("./datos");
 const app = express();
 app.use(cors()); // Middleware CORS
 app.use(express.json()) // Middleware convertir json
@@ -20,14 +22,8 @@ app.get("/", function (req, res) {
  * Ruta: /login
  * Metodo: POST
  * Headers:"Content-Type: application/json"
- * Datos de entrada: {
- *      "usuario" : 24526698, 
- *      "password" : "Pablo102030" 
- *  }
- * Respuesta: { 
- *      "codigo" : "200", 
- *      "descripcion" : "Credenciales exitosas"
- *  }
+ * Datos de entrada: { login }
+ * Respuesta: { loginUpdate }
  */
 
 app.post("/login", function(req, res) {
@@ -41,8 +37,8 @@ app.post("/login", function(req, res) {
  * Ruta: /registrarUsuario
  * Metodo: POST
  * Headers:"Content-Type: application/json"
- * Datos de entrada:  { login }
- * Respuesta: { loginUpdate }
+ * Datos de entrada:  { registroUsuario }
+ * Respuesta: { usuarioRegistrado }
  */
 
 app.post("/registrarUsuario", function(req, res) {
@@ -56,7 +52,7 @@ app.post("/registrarUsuario", function(req, res) {
  * Metodo: POST
  * Headers:"Content-Type: application/json"
  * Datos de entrada: { registroOrden }
- * Respuesta: { ordenUpdate }
+ * Respuesta: { newOrden }
  */
 
 app.post("/registrarOrden", function(req, res) {

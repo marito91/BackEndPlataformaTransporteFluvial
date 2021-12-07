@@ -352,12 +352,12 @@ exports.registroOrden = registroOrden;
 
 // Body Response:
 
-const ordenUpdate = {
+const newOrden = {
     "orden": "200",
     "mensaje": "Orden creada exitosamente"
 }
 
-exports.ordenUpdate = ordenUpdate;
+exports.newOrden = newOrden;
 
 
 
