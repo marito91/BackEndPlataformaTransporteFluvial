@@ -327,6 +327,40 @@ const puertoRegistrado = {
 
 exports.puertoRegistrado = puertoRegistrado;
 
+
+/*
+Method: POST 
+Route: /registrarOrden
+Headers: 
+"Content-Type: application/json"
+
+Body Request:
+*/
+
+const registroOrden = {
+    "articulo":"Cargamento",
+    "largo":"250",
+    "ancho":"150",
+    "alto": 150,
+    "peso":"300",
+    "puertoOrigen":"Puerto A",
+    "PuertoDestino":"Puerto B",
+    "Descripcion":"Descripcion Cargamento"
+}
+
+exports.registroOrden = registroOrden;
+
+// Body Response:
+
+const ordenUpdate = {
+    "orden": "200",
+    "mensaje": "Orden creada exitosamente"
+}
+
+exports.ordenUpdate = ordenUpdate;
+
+
+
 /*
 Method: POST 
 Route: /editarCostoMilla
