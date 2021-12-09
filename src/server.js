@@ -47,8 +47,22 @@ app.post("/login", function(req, res) {
  */
 
 app.post("/registrarUsuario", function(req, res) {
-    const {nombre, apellido, docType, document, email, userType, username, password} = req.body;
-    const newUser = {nombre, apellido, tipo_documento: docType, numero_documento: document, email, perfil: userType, user: username, pass: password};
+    const {nom, lastName, documentType, document, emailAddress, userType, username, password} = req.body;
+    // Se determina el tipo de perfil segun la informacion que recibe
+    if (userType === 'Item 2') {
+        profile = 1;
+    } else if (userType === 'Item 3') {
+        profile = 2;
+    }
+    // Se determina el tipo de documento segun la informacion que recibe
+    if (documentType === 'Item 2') {
+        idType = "C.C";
+    } else if (documentType === 'Item 3') {
+        idType = "C.E";
+    } else if (documentType === 'Item 4') {
+        idType = "NIT";
+    }
+    const newUser = {nombre: nom, apellido: lastName, tipo_documento: idType, numero_documento: document, email: emailAddress, perfil: profile, user: username, pass: password};
     usuarios.push(newUser);
     console.log(usuarios);
     res.send({estado : "ok", msg : "Usuario Registrado"});
@@ -186,16 +200,17 @@ app.get("/verCostoMilla/:id", function(req, res) {
 
 app.get("/listarUsuario", function(req, res) {
     const { document } = req.body; //Viene un json {numero_documento:"24526698"}
-    const newUser = usuarios.find(u => u.numero_documento === document); // funcion find recibe una funcion flecha como parametro, la cual recibe el valor para recorrer el array y que determina el valor que quiere encontrar
-    // Mensaje y estado inicializados en fallo (Por defecto se falla)
-    let alerta = "El producto no fue encontrado"
-    let estado = "error";
-    // Si producto es diferente a nada entonces mensaje producto encontrado, de lo contrario no encontrado
-    if (newUser != null && newUser != undefined) {
-        alerta = "Usuario encontrado."
-        estado = "ok"
-    }    
-    res.send({estado: estado, msg: alerta, data: newUser});
+    usuarios.find({document},function (error, user) {
+        if (error) {
+            return res.send({estado : "error", mensaje : "ERROR: Al buscar producto."})
+        } else {
+            if (prod != null) {
+                res.send({estado : "ok", mensaje : "Producto encontrado", data:prod});
+            } else {
+                res.send({estado : "ok", mensaje : "Producto no fue encontrado"});
+            }
+        }
+    })
 }); 
 
 
