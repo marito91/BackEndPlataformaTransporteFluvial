@@ -198,19 +198,18 @@ app.get("/verCostoMilla/:id", function(req, res) {
  * Datos de respuesta: { usuarios }
  */
 
-app.get("/listarUsuario", function(req, res) {
-    const { document } = req.body; //Viene un json {numero_documento:"24526698"}
-    usuarios.find({document},function (error, user) {
-        if (error) {
-            return res.send({estado : "error", mensaje : "ERROR: Al buscar producto."})
-        } else {
-            if (prod != null) {
-                res.send({estado : "ok", mensaje : "Producto encontrado", data:prod});
-            } else {
-                res.send({estado : "ok", mensaje : "Producto no fue encontrado"});
-            }
-        }
-    })
+app.get("/listarUsuario/:documento", function(req, res) {
+    let alerta = "No se encontró el usuario solicitado"
+    let estado = "error"
+    //const { document } = req.body; //Viene un json {numero_documento:"24526698"}
+    const document = req.params.documento; //Viene un json {numero_documento:"24526698"}
+    const oldUser = usuarios.find(u => u.numero_documento === document);
+
+    if (oldUser != null && oldUser != undefined) {
+        alerta = "Usuario encontrado exitosamente"
+        estado = "ok"
+    }
+    res.send({estado: estado, msg: alerta, data: oldUser})
 }); 
 
 

@@ -21,7 +21,7 @@ const usuarios = [
    {
       "numero_documento":"102234456",
       "nombre":"Juan Carlos",
-      "apellido":"Guitierrez",
+      "apellido":"Gutierrez",
       "perfil":2,
       "celular":"3208694311",
       "email":"gutijc@gmail.com"
@@ -420,8 +420,8 @@ Body Request:
 */
 
 const login = {
-	  "usuario": 24526698,
-	  "password": "Pablo102030"
+    "usuario": 24526698,
+    "password": "Pablo102030"
 }
 
 exports.login = login;
