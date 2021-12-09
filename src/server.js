@@ -1,4 +1,9 @@
-
+//npm init -y
+//npm install @babel/cli @babel/core @babel/node @babel/preset-env --save-dev
+//npm install express --save
+//npm run build && node ./build/server.jsclear
+//npm install cors --save
+//npm i mongoose (desde la carpeta back)
 
 const express = require("express");
 const cors = require("cors"); 
@@ -27,7 +32,7 @@ app.get("/", function (req, res) {
  */
 
 app.post("/login", function(req, res) {
-    res.send("Página de Login")
+    res.send("Autenticación de usuarios")
 })
 
 
@@ -42,7 +47,12 @@ app.post("/login", function(req, res) {
  */
 
 app.post("/registrarUsuario", function(req, res) {
-    res.send("Se registran nuevos usuarios")
+    const {nombre, apellido, docType, document, email, userType, username, password} = req.body;
+    const newUser = {nombre, apellido, tipo_documento: docType, numero_documento: document, email, perfil: userType, user: username, pass: password};
+    usuarios.push(newUser);
+    console.log(usuarios);
+    res.send({estado : "ok", msg : "Usuario Registrado"});
+    //res.send("Se registran nuevos usuarios")
 })
 
 /**
@@ -175,8 +185,18 @@ app.get("/verCostoMilla/:id", function(req, res) {
  */
 
 app.get("/listarUsuario", function(req, res) {
-    res.send("Muestra los datos del usuario")
-})
+    const { document } = req.body; //Viene un json {numero_documento:"24526698"}
+    const newUser = usuarios.find(u => u.numero_documento === document); // funcion find recibe una funcion flecha como parametro, la cual recibe el valor para recorrer el array y que determina el valor que quiere encontrar
+    // Mensaje y estado inicializados en fallo (Por defecto se falla)
+    let alerta = "El producto no fue encontrado"
+    let estado = "error";
+    // Si producto es diferente a nada entonces mensaje producto encontrado, de lo contrario no encontrado
+    if (newUser != null && newUser != undefined) {
+        alerta = "Usuario encontrado."
+        estado = "ok"
+    }    
+    res.send({estado: estado, msg: alerta, data: newUser});
+}); 
 
 
 
@@ -221,6 +241,11 @@ app.post("/editarOrden", function(req, res) {
 
 app.get("/listarPuertoDistancia", function(req, res) {
     res.send("Identifica la distancia entre los puertos")
+})
+
+app.post("/contacto", function(req, res) {
+    const { nombre, email, mensaje } = req.body;
+    res.send({estado : "ok", msg : "Producto guardado"});
 })
 
 
