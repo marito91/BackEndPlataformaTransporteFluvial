@@ -47,26 +47,41 @@ app.post("/login", function(req, res) {
  */
 
 app.post("/registrarUsuario", function(req, res) {
-    const {nom, lastName, documentType, document, emailAddress, userType, username, password} = req.body;
-    // Se determina el tipo de perfil segun la informacion que recibe
-    if (userType === 'Item 2') {
-        profile = 1;
-    } else if (userType === 'Item 3') {
-        profile = 2;
+    // Se recibe un json con toda la informacion respectiva para crear un usuario nuevo
+    const {nom, lastName, documentType, document, emailAddress, userType, phone, password} = req.body;
+    // Se obtiene el numero de documento para revisar si el usuario ya existe
+    const id = req.body.document;
+    // Se hace una busqueda del documento para ver si ya existe
+    const oldUser = usuarios.find(u => u.numero_documento === id);
+    // Si el usuario ya existe envia una alerta 
+    if (oldUser != null && oldUser != undefined) {
+        res.send({estado : "error", msg : "El usuario ya se encuentra registrado en el sistema."});
+    } else { // de lo contrario:
+        // Se determina el tipo de perfil segun la informacion que recibe
+        if (userType === 'Item 2') {
+            profile = 1;
+        } else if (userType === 'Item 3') {
+            profile = 2;
+        }
+        // Se determina el tipo de documento segun la informacion que recibe
+        if (documentType === 'Item 2') {
+            idType = "C.C";
+        } else if (documentType === 'Item 3') {
+            idType = "C.E";
+        } else if (documentType === 'Item 4') {
+            idType = "NIT";
+        }
+        // Se crea una variable newUser donde a cada Key se le asigna los valores que vienen del json del front end
+        const newUser = {nombre: nom, apellido: lastName, tipo_documento: idType, numero_documento: document, email: emailAddress, perfil: profile, celular: phone, pass: password};
+        // Se agrega el newUser a base de datos
+        usuarios.push(newUser);
+        // Se confirma que se estan recibiendo todos los datos correspondientes
+        console.log(usuarios);
+        // Se envia estado y mensaje al front end para confirmar que el usuario se registro
+        res.send({estado : "ok", msg : "Usuario Registrado"});
+
     }
-    // Se determina el tipo de documento segun la informacion que recibe
-    if (documentType === 'Item 2') {
-        idType = "C.C";
-    } else if (documentType === 'Item 3') {
-        idType = "C.E";
-    } else if (documentType === 'Item 4') {
-        idType = "NIT";
-    }
-    const newUser = {nombre: nom, apellido: lastName, tipo_documento: idType, numero_documento: document, email: emailAddress, perfil: profile, user: username, pass: password};
-    usuarios.push(newUser);
-    console.log(usuarios);
-    res.send({estado : "ok", msg : "Usuario Registrado"});
-    //res.send("Se registran nuevos usuarios")
+  
 })
 
 /**
