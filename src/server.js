@@ -160,7 +160,7 @@ app.get("/listarOrden/?estado=Finalizada", function(req, res) {
  */
 
 app.get("/listarPuerto", function(req, res) {
-    res.send({ puertos })
+    res.send({ ports: puertos })
 })
 
 
@@ -284,6 +284,34 @@ app.post("/contacto", function(req, res) {
     const { nombre, email, mensaje } = req.body;
     res.send({estado : "ok", msg : "Producto guardado"});
 })
+
+
+
+
+
+app.post("/auth/signup", function(req, res) {
+    res.send("Sign up new account")
+})
+
+app.post("/auth/signin", function(req, res) {
+    res.send("Login an account")
+})
+
+app.get("/test/all", function(req, res) {
+    res.send("Retrieve public content")
+})
+
+app.get("/test/user", function(req, res) {
+    res.send("Access user's content")
+})
+
+app.get("/test/admin", function(req, res) {
+    res.send("Access Admin's content")
+})
+
+
+
+
 
 
 
