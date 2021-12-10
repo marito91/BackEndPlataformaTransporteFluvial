@@ -7,6 +7,10 @@
 
 const express = require("express");
 const cors = require("cors"); 
+const mongoose = require("mongoose");
+const Usuario = require("./modelos/usuarioModel");
+const Orden = require("./modelos/orden");
+const Puerto = require("./modelos/puerto");
 //const { productos } = require("./datos");
 const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, newOrden, registroPuerto, 
         puertoRegistrado, ordenDetalle, estados, puertos, distanciaPuertos, costoMilla, costoUpdate, costo, 
@@ -16,6 +20,10 @@ app.use(cors()); // Middleware CORS
 app.use(express.json()) // Middleware convertir json
 app.use(express.urlencoded({ extended: true })); // Codifica la informacion que viene por el cliente en la barra de busqueda del navegador
 
+// Se conecta la aplicación a Base de Datos
+mongoose.connect("mongodb://127.0.0.1:27017/naviera")
+.then(res => console.log("Conectado a base de datos"))
+.catch(error => console.log(error));
 
 app.get("/", function (req, res) {
     res.send("Prueba")
@@ -152,7 +160,7 @@ app.get("/listarOrden/?estado=Finalizada", function(req, res) {
  */
 
 app.get("/listarPuerto", function(req, res) {
-    res.send("Se listan los puertos")
+    res.send({ puertos })
 })
 
 
