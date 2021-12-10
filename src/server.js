@@ -4,6 +4,7 @@
 //npm run build && node ./build/server.jsclear
 //npm install cors --save
 //npm i mongoose (desde la carpeta back)
+//npm install jsonwebtoken bcryptjs --save (Instala los webtoken y bcrypt)
 
 const express = require("express");
 const cors = require("cors"); 
@@ -118,7 +119,26 @@ app.post("/registrarOrden", function(req, res) {
  */
 
 app.post("/registrarPuerto", function(req, res) {
-    res.send("Se registran nuevos puertos")
+        // Se recibe un json con toda la informacion respectiva para crear un usuario nuevo
+        const {nomPto, idPto, distPto, munPto, rioPto} = req.body;
+        // Se obtiene el numero de documento para revisar si el usuario ya existe
+        const id = req.body.idPto;
+        // Se hace una busqueda del documento para ver si ya existe
+        const puerto = puertos.find(p => p.id_puerto === id);
+        // Si el usuario ya existe envia una alerta 
+        if (puerto != null && puerto != undefined) {
+            res.send({estado : "error", msg : "El puerto ya se encuentra registrado en el sistema."});
+        } else { // de lo contrario:
+            // Se crea una variable newPort donde a cada Key se le asigna los valores que vienen del json del front end
+            const newPort = {nombre: nomPto, id_puerto: idPto, millas: distPto, municipio: munPto, rioPto};
+            // Se agrega el newUser a base de datos
+            puertos.push(newPort);
+            // Se confirma que se estan recibiendo todos los datos correspondientes
+            console.log(puertos);
+            // Se envia estado y mensaje al front end para confirmar que el usuario se registro
+            res.send({estado : "ok", msg : "Puerto registrado exitosamente."});
+    
+        }
 })
 
 
@@ -160,7 +180,7 @@ app.get("/listarOrden/?estado=Finalizada", function(req, res) {
  */
 
 app.get("/listarPuerto", function(req, res) {
-    res.send({ ports: puertos })
+    res.send({ puertos })
 })
 
 
