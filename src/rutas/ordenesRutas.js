@@ -5,9 +5,7 @@ const { compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 //const { userGuard } = require("../guards/userGuard");
 
-const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, newOrden, registroPuerto, 
-    puertoRegistrado, ordenDetalle, estados, puertos, distanciaPuertos, costoMilla, costoUpdate, costo, 
-    usuarios, ordenes, editarOrden, ordenUpdate, distancias } = require("./datos");
+const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, ordenUpdate } = require("../datos");
 
 
 /**
@@ -20,7 +18,7 @@ const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, n
  * Respuesta: { newOrden }
  */
 
- app.post("/registrarOrden", function(req, res) {
+ ordenesRutas.post("/registrarOrden", function(req, res) {
     res.send("Se registran nuevas ordenes")
 })
 
@@ -34,7 +32,7 @@ const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, n
  * Datos de respuesta: { ordenDetalle }
  */
 
- app.get("/listarOrdenDetalle/?id_orden=1002", function(req, res) {
+ ordenesRutas.get("/listarOrdenDetalle/?id_orden=1002", function(req, res) {
     res.send("Se buscan las ordenes")
 })
 
@@ -48,7 +46,7 @@ const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, n
  * Datos de respuesta: { estados }
  */
 
-app.get("/listarOrden/?estado=Finalizada", function(req, res) {
+ordenesRutas.get("/listarOrden/?estado=Finalizada", function(req, res) {
     res.send("Se indica el estado de las ordenes")
 })
 
@@ -62,7 +60,7 @@ app.get("/listarOrden/?estado=Finalizada", function(req, res) {
  * Datos de respuesta: { ordenes }
  */
 
- app.get("/listarOrden", function(req, res) {
+ ordenesRutas.get("/listarOrden", function(req, res) {
     res.send("Muestra los datos de la orden")
 })
 
@@ -78,7 +76,7 @@ app.get("/listarOrden/?estado=Finalizada", function(req, res) {
  * Datos de respuesta: { ordenUpdate }
  */
 
-app.post("/editarOrden", function(req, res) {
+ordenesRutas.post("/editarOrden", function(req, res) {
     res.send("Actualiza los datos de la orden")
 })
 

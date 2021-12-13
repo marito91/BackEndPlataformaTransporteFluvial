@@ -5,9 +5,7 @@ const { compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 //const { userGuard } = require("../guards/userGuard");
 
-const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, newOrden, registroPuerto, 
-    puertoRegistrado, ordenDetalle, estados, puertos, distanciaPuertos, costoMilla, costoUpdate, costo, 
-    usuarios, ordenes, editarOrden, ordenUpdate, distancias } = require("./datos");
+const { registroPuerto, puertoRegistrado, puertos, distanciaPuertos, costoMilla, costoUpdate, costo, distancias } = require("../datos");
 
 
 /**
@@ -20,7 +18,7 @@ const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, n
  * Respuesta: { puertoRegistrado }
  */
 
- app.post("/registrarPuerto", function(req, res) {
+ puertosRutas.post("/registrarPuerto", function(req, res) {
     // Se recibe un json con toda la informacion respectiva para crear un usuario nuevo
     const {nomPto, idPto, distPto, munPto, rioPto} = req.body;
     // Se obtiene el numero de documento para revisar si el usuario ya existe
@@ -56,8 +54,8 @@ const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, n
 * Datos de respuesta: { puertos }
 */
 
-app.get("/listarPuerto", function(req, res) {
-res.send({ puertos })
+puertosRutas.get("/listarPuerto", function(req, res) {
+    res.send( puertos )
 })
 
 
@@ -71,7 +69,7 @@ res.send({ puertos })
 * Datos de respuesta: { distanciaPuertos }
 */
 
-app.get("/listarDistanciaPuerto/?origen=Puerto_Carreño&destino=Puerto_Nariño", function(req, res) {
+puertosRutas.get("/listarDistanciaPuerto/?origen=Puerto_Carreño&destino=Puerto_Nariño", function(req, res) {
 res.send("Indica la distancia y el precio a pagar")
 })
 
@@ -87,7 +85,7 @@ res.send("Indica la distancia y el precio a pagar")
 * Datos de respuesta: { costoUpdate }
 */
 
-app.get("/editarCostoMilla", function(req, res) {
+puertosRutas.get("/editarCostoMilla", function(req, res) {
 res.send("Cambia el valor del costo de milla")
 })
 
@@ -101,7 +99,7 @@ res.send("Cambia el valor del costo de milla")
 * Datos de respuesta: { costo }
 */
 
-app.get("/verCostoMilla/:id", function(req, res) {
+puertosRutas.get("/verCostoMilla/:id", function(req, res) {
 const id = req.params.id;
 const valor = costo.find( c => c.id.toLowerCase() === id.toLowerCase());
 res.send(valor);
@@ -119,7 +117,7 @@ res.send(valor);
 * Datos de respuesta: { distancias }
 */
 
-app.get("/listarPuertoDistancia", function(req, res) {
+puertosRutas.get("/listarPuertoDistancia", function(req, res) {
 res.send("Identifica la distancia entre los puertos")
 })
 
