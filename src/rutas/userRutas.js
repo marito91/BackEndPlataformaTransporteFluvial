@@ -3,7 +3,7 @@ const userRutas = Router();
 const { userModel } = require("../modelos/usuarioModel");
 const { compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
-const { userGuard } = require("../guards/userGuard");
+//const { userGuard } = require("../guards/userGuard");
 
 const { login, loginUpdate, registroUsuario, usuarioRegistrado, usuarios } = require("./datos");
 

@@ -3,7 +3,7 @@ const puertosRutas = Router();
 const { puertosModel } = require("../modelos/puerto");
 const { compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
-const { userGuard } = require("../guards/userGuard");
+//const { userGuard } = require("../guards/userGuard");
 
 const { login, loginUpdate, registroUsuario, usuarioRegistrado, registroOrden, newOrden, registroPuerto, 
     puertoRegistrado, ordenDetalle, estados, puertos, distanciaPuertos, costoMilla, costoUpdate, costo, 
