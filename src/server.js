@@ -26,13 +26,9 @@ app.use(cors()); // Middleware CORS
 app.use(express.json()) // Middleware convertir json
 app.use(express.urlencoded({ extended: true })); // Codifica la informacion que viene por el cliente en la barra de busqueda del navegador
 
-// Se conecta la aplicación a Base de Datos
-mongoose.connect(process.env.MONGODB_SERVER_URL)
-.then(res => console.log("Conectado a base de datos"))
-.catch(error => console.log(error));
 
 // Distribucion de Rutas
-require("dotenv").config({ path: "important.env"});
+require("dotenv").config();
 
 // APIs 
 app.use("/user", userRutas);
@@ -40,6 +36,10 @@ app.use("/ordenes", ordenesRutas);
 app.use("/puertos", puertosRutas);
 
 
+// Se conecta la aplicación a Base de Datos
+mongoose.connect(process.env.MONGODB_SERVER_URL)
+.then(res => console.log("Conectado a base de datos"))
+.catch(error => console.log(error));
 
 
 app.get("/", function (req, res) {
