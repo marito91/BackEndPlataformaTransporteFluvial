@@ -84,7 +84,6 @@ userRutas.post("/registrarUsuario", function(req, res) {
  userRutas.get("/listarUsuario/:documento", function(req, res) {
     let alerta = "No se encontró el usuario solicitado"
     let estado = "error"
-    //const { document } = req.body; //Viene un json {numero_documento:"24526698"}
     const document = req.params.documento; //Viene un json {numero_documento:"24526698"}
     const oldUser = usuarios.find(u => u.numero_documento === document);
 
@@ -109,11 +108,10 @@ userRutas.post("/registrarUsuario", function(req, res) {
  userRutas.post("/editarUsuario", function(req, res) {
     // Desestructuracion
     const {nom, lastName, documentType, document, emailAddress, userType, phone, password} = req.body;
-    // Buscar el usuario a Editar
-    let i = 0;
     // Se hacen las alertas predeterminadas
     let alerta = "error";
     let mensaje = "El usuario no se encuentra registrado en nuestra base de datos"
+    let i = 0;
     for (const u of usuarios) {
         if (u.numero_documento.toLowerCase() == document.toLowerCase()) {
             // Se hacen las respectivas validaciones con la informacion que viene de los SELECT FIELDS

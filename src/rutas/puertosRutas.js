@@ -70,8 +70,14 @@ puertosRutas.post("/listarPuerto", function(req, res) {
 * Datos de respuesta: { distanciaPuertos }
 */
 
-puertosRutas.get("/listarDistanciaPuerto/?origen=Puerto_Carreño&destino=Puerto_Nariño", function(req, res) {
-res.send("Indica la distancia y el precio a pagar")
+puertosRutas.post("/listarDistanciaPuerto", function(req, res) {
+    const { origen, destino } = req.body;
+    const portA = determinarPuerto(origen);
+    console.log(portA);
+    // Se buscan los puertos en BD para determinar sus distancias
+    const puertoA = distancias.find(d => d.nombre.toLowerCase() === origen.toLowerCase());
+    const puertoB = distancias.find(d => d.nombre.toLowerCase() === destino.toLowerCase());
+    res.send({ estado:"ok", msg:"Distancia y valor calculado", puertoA, puertoB })
 })
 
 
@@ -86,9 +92,16 @@ res.send("Indica la distancia y el precio a pagar")
 * Datos de respuesta: { costoUpdate }
 */
 
-puertosRutas.get("/editarCostoMilla", function(req, res) {
-res.send("Cambia el valor del costo de milla")
-})
+puertosRutas.post("/editarCostoMilla", function(req, res) {
+    // Recibe el valor en dolares del Front
+    const { dolares } = req.body;
+    // Se hace seguimiento de como llega el valor
+    //console.log(dolares)
+    // Se actualiza el costo de la milla en BD
+    costo.valor = dolares;
+
+    res.send({estado: "ok", msg:"Costo de milla actualizado satisfactoriamente"});
+});
 
 
 /**
@@ -100,9 +113,14 @@ res.send("Cambia el valor del costo de milla")
 * Datos de respuesta: { costo }
 */
 
-puertosRutas.get("/verCostoMilla", function(req, res) {
-    let pesos = costo * 3900;
-    res.send({ estado: "ok", msg: "Costo de milla actual", data: costo, pesos });
+puertosRutas.post("/verCostoMilla", function(req, res) {
+    // Hace la conversion a pesos segun el valor en doalres
+    const pesos = costo.valor * 3900;
+    // Se hace seguimiento por consola para ver si la operacion es correcta
+    //console.log(pesos);
+    //console.log(costo.valor);
+    // Envia un estado ok, con un mensaje y los respectivos valores en dolares y pesos
+    res.send({ estado: "ok", msg: "Costo de milla actual", data: costo.valor, pesos });
 })
 
 
@@ -117,8 +135,56 @@ puertosRutas.get("/verCostoMilla", function(req, res) {
 */
 
 puertosRutas.get("/listarPuertoDistancia", function(req, res) {
-res.send("Identifica la distancia entre los puertos")
+    res.send("Identifica la distancia entre los puertos")
 })
 
 
 exports.puertosRutas = puertosRutas;
+
+
+
+function determinarPuerto(item) {
+    const port = "";
+    if (item === 'Item 2') {
+        port = "Puerto_Carreño";
+    } else if (item === 'Item 3') {
+        port = "Puerto_Nariño";
+    } else if (item === 'Item 4') {
+        port = "Puerto_Banqueta";
+    } else if (item === 'Item 5') {
+        port = "Puerto_Cabuyo";
+    } else if (item === 'Item 6') {
+        port = "Puerto_López";
+    } else if (item === 'Item 7') {
+        port = "Puerto_Guaviare";
+    } else if (item === 'Item 8') {
+        port = "Puerto_Mitú";
+    } else if (item === 'Item 9') {
+        port = "Puerto_Yuruparí";
+    } else if (item === 'Item 10') {
+        port = "Puerto_Pucarón";
+    } else if (item === 'Item 11') {
+        port = "Puerto_Calamar";
+    } else if (item === 'Item 12') {
+        port = "Puerto_Inírida";
+    } else if (item === 'Item 13') {
+        port = "Puerto_Tumaco";
+    } else if (item === 'Item 14') {
+        port = "Puerto_Buenaventura";
+    } else if (item === 'Item 15') {
+        port = "Puerto_Salgar";
+    } else if (item === 'Item 16') {
+        port = "Puerto_Berrio";
+    } else if (item === 'Item 17') {
+        port = "Puerto_Barrancabermeja";
+    } else if (item === 'Item 18') {
+        port = "Puerto_Cartagena";
+    } else if (item === 'Item 19') {
+        port = "Puerto_Santa_Marta";
+    } else if (item === 'Item 20') {
+        port = "Puerto_Barranquilla";
+    } else if (item === 'Item 21') {
+        port = "Puerto_Gamarra";
+    }
+    return port;
+}
