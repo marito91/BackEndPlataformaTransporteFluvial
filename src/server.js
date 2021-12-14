@@ -27,12 +27,12 @@ app.use(express.json()) // Middleware convertir json
 app.use(express.urlencoded({ extended: true })); // Codifica la informacion que viene por el cliente en la barra de busqueda del navegador
 
 // Se conecta la aplicación a Base de Datos
-mongoose.connect("mongodb://127.0.0.1:27017/naviera")
+mongoose.connect(process.env.MONGODB_SERVER_URL)
 .then(res => console.log("Conectado a base de datos"))
 .catch(error => console.log(error));
 
 // Distribucion de Rutas
-require("dotenv").config();
+require("dotenv").config({ path: "important.env"});
 
 // APIs 
 app.use("/user", userRutas);

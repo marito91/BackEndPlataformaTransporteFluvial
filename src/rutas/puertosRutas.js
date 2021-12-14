@@ -54,8 +54,9 @@ const { registroPuerto, puertoRegistrado, puertos, distanciaPuertos, costoMilla,
 * Datos de respuesta: { puertos }
 */
 
-puertosRutas.get("/listarPuerto", function(req, res) {
-    res.send( puertos )
+puertosRutas.post("/listarPuerto", function(req, res) {
+    //console.log(puertos);
+    res.send({ estado: "ok", data: puertos })
 })
 
 
