@@ -100,11 +100,9 @@ res.send("Cambia el valor del costo de milla")
 * Datos de respuesta: { costo }
 */
 
-puertosRutas.get("/verCostoMilla/:id", function(req, res) {
-const id = req.params.id;
-const valor = costo.find( c => c.id.toLowerCase() === id.toLowerCase());
-res.send(valor);
-//res.send("Indica el valor del costo de milla")
+puertosRutas.get("/verCostoMilla", function(req, res) {
+    let pesos = costo * 3900;
+    res.send({ estado: "ok", msg: "Costo de milla actual", data: costo, pesos });
 })
 
 

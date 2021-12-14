@@ -199,16 +199,9 @@ Headers:
 //Body Response:
 */
 
-const costo = [{
-    "id":"a", 
-    "valor":124000
-},{
-    "id":"b", 
-    "valor":256000
-},{
-    "id":"c", 
-    "valor":320000
-}]
+let costo = {
+    "valor": 150
+};
 exports.costo = costo;
 
 
