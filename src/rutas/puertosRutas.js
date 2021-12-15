@@ -144,7 +144,7 @@ exports.puertosRutas = puertosRutas;
 
 
 function determinarPuerto(item) {
-    const port = "";
+    let port = "";
     if (item === 'Item 2') {
         port = "Puerto_Carreño";
     } else if (item === 'Item 3') {
