@@ -7,6 +7,7 @@ const { sign } = require("jsonwebtoken");
 
 const { registroPuerto, puertoRegistrado, puertos, distanciaPuertos, costoMilla, costoUpdate, costo, distancias } = require("../datos");
 
+const tasaDolar = 3900;
 
 /**
  * API Rest Modulo de registro de puertos
@@ -64,20 +65,32 @@ puertosRutas.post("/listarPuerto", function(req, res) {
 /**
 * API Rest Modulo de calculo de distancia
 * Descripcion: Indica el precio segun la distancia calculada
-* Ruta: /listarDistanciaPuerto/?origen=Puerto_Carreño&destino=Puerto_Nariño
-* Metodo: GET
+* Ruta: /listarDistanciaPuerto/
+* Metodo: POST
 * Headers:"Content-Type: application/json"
-* Datos de respuesta: { distanciaPuertos }
+* Datos de respuesta: { distanciaPuertos, costo }
 */
 
 puertosRutas.post("/listarDistanciaPuerto", function(req, res) {
     const { origen, destino } = req.body;
     const portA = determinarPuerto(origen);
-    console.log(portA);
+    //console.log(portA);
     // Se buscan los puertos en BD para determinar sus distancias
     const puertoA = distancias.find(d => d.nombre.toLowerCase() === origen.toLowerCase());
     const puertoB = distancias.find(d => d.nombre.toLowerCase() === destino.toLowerCase());
-    res.send({ estado:"ok", msg:"Distancia y valor calculado", puertoA, puertoB })
+    // Se suman las distancias de ambos puertos para determinar el valor a pagar
+    const distancia = puertoA.distancia + puertoB.distancia;
+    // Se calcula el valor en pesos segun la tasa del dolar manifestada al inicio del archivo
+    const pesos = costo.valor * tasaDolar;
+    // Se determina el precio total a cancelar en pesos segun la distancia de ambos puertos
+    const precio = pesos * distancia;
+    // Se hacen las respectivas validaciones de cada uno de los datos antes de enviarlos al Front
+    //console.log(puertoA)
+    //console.log(puertoB)
+    //console.log(distancia)
+    //console.log(precio)
+
+    res.send({ estado:"ok", msg:"Distancia y valor calculado", distancia, precio })
 })
 
 
@@ -115,7 +128,7 @@ puertosRutas.post("/editarCostoMilla", function(req, res) {
 
 puertosRutas.post("/verCostoMilla", function(req, res) {
     // Hace la conversion a pesos segun el valor en doalres
-    const pesos = costo.valor * 3900;
+    const pesos = costo.valor * tasaDolar;
     // Se hace seguimiento por consola para ver si la operacion es correcta
     //console.log(pesos);
     //console.log(costo.valor);
