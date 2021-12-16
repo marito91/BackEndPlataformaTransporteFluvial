@@ -236,7 +236,7 @@ Body Response:
 
 const ordenes = [
    {
-      "id_orden":1001,
+      "id_orden":1,
 	  "fecha_orden":"2021-10-12 14:30:25",
 	  "nombre_contenedor":"SKO4477",
       "puerto_origen":"Puerto Carreño",
@@ -244,7 +244,7 @@ const ordenes = [
 	  "estado_orden":"Finalizada"
    },
    {
-      "id_orden":1002,
+      "id_orden":2,
 	  "fecha_orden":"2021-10-13 10:21:44",
 	  "nombre_contenedor":"FFA5893",
       "puerto_origen":"Puerto Barranquilla",
@@ -252,7 +252,7 @@ const ordenes = [
 	  "estado_orden":"Finalizada"
    },
    {
-      "id_orden":1003,
+      "id_orden":3,
 	  "fecha_orden":"2021-11-30 17:44:30",
 	  "nombre_contenedor":"MIC1322",
       "puerto_origen":"Puerto Salgar",
@@ -330,8 +330,8 @@ Headers:
 Body Request:
 */
 
-const registroOrden = {
-   "orderID":0,
+const registroOrden = [{
+   "id_orden":0,
    "articulo":"Cargamento",
    "largo":250,
    "ancho":150,
@@ -340,7 +340,7 @@ const registroOrden = {
    "puertoOrigen":"Puerto A",
    "PuertoDestino":"Puerto B",
    "Descripcion":"Descripcion Cargamento"
-}
+}]
 
 exports.registroOrden = registroOrden;
 

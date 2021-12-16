@@ -43,12 +43,12 @@ mongoose.connect(process.env.MONGODB_SERVER_URL)
 
 
 app.get("/", function (req, res) {
-    res.send("Prueba")
+    res.send("Main route")
 })
 
 app.post("/contacto", function(req, res) {
     const { nombre, email, mensaje } = req.body;
-    res.send({estado : "ok", msg : "Producto guardado"});
+    res.send({estado : "ok", msg : "Gracias por su mensaje. Lo estaremos contactando pronto!"});
 })
 
 

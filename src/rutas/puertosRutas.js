@@ -50,7 +50,7 @@ const tasaDolar = 3900;
 * API Rest Modulo de listado de puertos
 * Descripcion: Indica los puertos activos
 * Ruta: /listarPuerto
-* Metodo: GET
+* Metodo: POST
 * Headers:"Content-Type: application/json"
 * Datos de respuesta: { puertos }
 */
