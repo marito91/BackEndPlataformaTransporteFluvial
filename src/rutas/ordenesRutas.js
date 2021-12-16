@@ -33,16 +33,14 @@ const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, or
     }
     // Se asigna un nuevo numero de orden
     const orderId = last + 1;
-    console.log(orderId)
     // Se compara una ultima vez si existe el numero de orden
     const lastID = ordenes.find(o => o.id_orden === orderId);
-    console.log(lastID)
     // Si la orden ya existe envia una alerta 
     if (lastID != null && lastID != undefined) {
         res.send({estado : "error", msg : "Ya existe una orden registrada."});
     } else { // de lo contrario:
         // Se crea una variable newOrder donde a cada Key se le asigna los valores que vienen del json del front end
-        const newOrder = {id_orden: orderId, articulo: art, largo: length, ancho: width, alto: height, peso: weight, puertoOrigen: origen, PuertoDestino: destino, Descripcion: descr, estadoOrd: "Registro-Embarque" };
+        const newOrder = {id_orden: orderId, articulo: art, largo: length, ancho: width, alto: height, peso: weight, puertoOrigen: origen, PuertoDestino: destino, Descripcion: descr, estado_orden: "Registro-Embarque" };
         // Se agrega la nueva orden a base de datos
         ordenes.push(newOrder);
         // Se confirma que se estan recibiendo todos los datos correspondientes
@@ -63,8 +61,15 @@ const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, or
  * Datos de respuesta: { ordenDetalle }
  */
 
- ordenesRutas.get("/listarOrdenDetalle/?id_orden=1002", function(req, res) {
-    res.send("Se buscan las ordenes")
+ ordenesRutas.get("/listarOrdenDetalle/:orden", function(req, res) {
+    const numero = req.params.orden;
+    console.log(numero);
+    const orden = ordenes.find(o => o.id_orden === parseInt(numero));
+    if (orden != null && orden != undefined) {
+        res.send({ estado: "ok", msg: "Orden encontrada con éxito.", orden })
+    } else {
+        res.send({ estado: "error", msg: "No se encontró la orden solicitada" })
+    }
 })
 
 

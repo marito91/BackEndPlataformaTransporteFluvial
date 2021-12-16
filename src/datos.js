@@ -257,7 +257,7 @@ const ordenes = [
 	  "nombre_contenedor":"MIC1322",
       "puerto_origen":"Puerto Salgar",
 	  "puerto_destino":"Puerto Tumaco",
-	  "estado_orden":"Desspachada"
+	  "estado_orden":"Despachada"
    }
 ]
 
