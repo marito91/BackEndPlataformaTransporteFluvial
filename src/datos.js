@@ -61,99 +61,99 @@ Body Response:
 const puertos = [
    {
       "id_puerto":1,
-      "nombre":"Puerto_Carreño"
+      "nombre":"Puerto Carreño"
    },
    {
       "id_puerto":2,
-      "nombre":"Puerto_Nariño"
+      "nombre":"Puerto Nariño"
    },
    {
       "id_puerto":3,
-      "nombre":"Puerto_Banqueta"
+      "nombre":"Puerto Banqueta"
    },
    {
       "id_puerto":4,
-      "nombre":"Puerto_Cabuyo"
+      "nombre":"Puerto Cabuyo"
    }
    ,
    {
       "id_puerto":5,
-      "nombre":"Puerto_López"
+      "nombre":"Puerto López"
    }
    ,
    {
       "id_puerto":6,
-      "nombre":"Puerto_Guaviare"
+      "nombre":"Puerto Guaviare"
    }
    ,
    {
       "id_puerto":7,
-      "nombre":"Puerto_Mitú"
+      "nombre":"Puerto Mitú"
    }
    ,
    {
       "id_puerto":8,
-      "nombre":"Puerto_Yuruparí"
+      "nombre":"Puerto Yuruparí"
    }
    ,
    {
       "id_puerto":9,
-      "nombre":"Puerto_Pucarón"
+      "nombre":"Puerto Pucarón"
    }
    ,
    {
       "id_puerto":10,
-      "nombre":"Puerto_Calamar"
+      "nombre":"Puerto Calamar"
    }
    ,
    {
       "id_puerto":11,
-      "nombre":"Puerto_Inírida"
+      "nombre":"Puerto Inírida"
    }
    ,
    {
       "id_puerto":12,
-      "nombre":"Puerto_Tumaco"
+      "nombre":"Puerto Tumaco"
    }
    ,
    {
       "id_puerto":13,
-      "nombre":"Puerto_Buenaventura"
+      "nombre":"Puerto Buenaventura"
    }
    ,
    {
       "id_puerto":14,
-      "nombre":"Puerto_Salgar"
+      "nombre":"Puerto Salgar"
    }
    ,
    {
       "id_puerto":15,
-      "nombre":"Puerto_Berrio"
+      "nombre":"Puerto Berrio"
    }
    ,
    {
       "id_puerto":16,
-      "nombre":"Puerto_Barrancabermeja"
+      "nombre":"Puerto Barrancabermeja"
    }
    ,
    {
       "id_puerto":17,
-      "nombre":"Puerto_Cartagena"
+      "nombre":"Puerto Cartagena"
    }
    ,
    {
       "id_puerto":18,
-      "nombre":"Puerto_Santa_Marta"
+      "nombre":"Puerto Santa Marta"
    }
    ,
    {
       "id_puerto":19,
-      "nombre":"Puerto_Barranquilla"
+      "nombre":"Puerto Barranquilla"
    }
    ,
    {
       "id_puerto":20,
-      "nombre":"Puerto_Gamarra"
+      "nombre":"Puerto Gamarra"
    }
 ]
 
@@ -237,6 +237,7 @@ Body Response:
 const ordenes = [
    {
       "id_orden":1,
+      "articulo":"Joyas",
 	  "fecha_orden":"2021-10-12 14:30:25",
 	  "nombre_contenedor":"SKO4477",
       "puerto_origen":"Puerto Carreño",
@@ -245,6 +246,7 @@ const ordenes = [
    },
    {
       "id_orden":2,
+      "articulo":"Prendas",
 	  "fecha_orden":"2021-10-13 10:21:44",
 	  "nombre_contenedor":"FFA5893",
       "puerto_origen":"Puerto Barranquilla",
@@ -253,11 +255,26 @@ const ordenes = [
    },
    {
       "id_orden":3,
+      "articulo":"Televisores",
 	  "fecha_orden":"2021-11-30 17:44:30",
 	  "nombre_contenedor":"MIC1322",
       "puerto_origen":"Puerto Salgar",
 	  "puerto_destino":"Puerto Tumaco",
 	  "estado_orden":"Despachada"
+   },
+   {
+      "id_orden":4,
+	  "fecha_orden":"2021-11-30 17:44:30",
+     "articulo":"Telas",
+     "alto":34,
+     "ancho":56,
+     "largo":32,
+     "peso":20,
+	  "nombre_contenedor":"MIC1322",
+      "puerto_origen":"Puerto Santa Marta",
+	  "puerto_destino":"Puerto Cartagena",
+     "descripcion":"Mercancia de telas",
+	  "estado_orden":"preparando para Embarcar"
    }
 ]
 
@@ -474,118 +491,118 @@ Body Response:
 const distancias = [
    {
       "id_puerto":1,
-      "nombre":"Puerto_Carreño",
+      "nombre":"Puerto Carreño",
       "distancia":220
    },
    {
       "id_puerto":2,
-      "nombre":"Puerto_Nariño",
+      "nombre":"Puerto Nariño",
       "distancia":300
    },
    {
       "id_puerto":3,
-      "nombre":"Puerto_Banqueta",
+      "nombre":"Puerto Banqueta",
       "distancia":270
    },
    {
       "id_puerto":4,
-      "nombre":"Puerto_Cabuyo",
+      "nombre":"Puerto Cabuyo",
       "distancia":140
    }
    ,
    {
       "id_puerto":5,
-      "nombre":"Puerto_López",
+      "nombre":"Puerto López",
       "distancia":200
    }
    ,
    {
       "id_puerto":6,
-      "nombre":"Puerto_Guaviare",
+      "nombre":"Puerto Guaviare",
       "distancia":100
    }
    ,
    {
       "id_puerto":7,
-      "nombre":"Puerto_Mitú",
+      "nombre":"Puerto Mitú",
       "distancia":150
    }
    ,
    {
       "id_puerto":8,
-      "nombre":"Puerto_Yuruparí",
+      "nombre":"Puerto Yuruparí",
       "distancia":180
    }
    ,
    {
       "id_puerto":9,
-      "nombre":"Puerto_Pucarón",
+      "nombre":"Puerto Pucarón",
       "distancia":220
    }
    ,
    {
       "id_puerto":10,
-      "nombre":"Puerto_Calamar",
+      "nombre":"Puerto Calamar",
       "distancia":190
    }
    ,
    {
       "id_puerto":11,
-      "nombre":"Puerto_Inírida",
+      "nombre":"Puerto Inírida",
       "distancia":170
    }
    ,
    {
       "id_puerto":12,
-      "nombre":"Puerto_Tumaco",
+      "nombre":"Puerto Tumaco",
       "distancia":80
    }
    ,
    {
       "id_puerto":13,
-      "nombre":"Puerto_Buenaventura",
+      "nombre":"Puerto Buenaventura",
       "distancia":230
    }
    ,
    {
       "id_puerto":14,
-      "nombre":"Puerto_Salgar",
+      "nombre":"Puerto Salgar",
       "distancia":110
    }
    ,
    {
       "id_puerto":15,
-      "nombre":"Puerto_Berrio",
+      "nombre":"Puerto Berrio",
       "distancia":180
    }
    ,
    {
       "id_puerto":16,
-      "nombre":"Puerto_Barrancabermeja",
+      "nombre":"Puerto Barrancabermeja",
       "distancia":240
    }
    ,
    {
       "id_puerto":17,
-      "nombre":"Puerto_Cartagena",
+      "nombre":"Puerto Cartagena",
       "distancia":90
    }
    ,
    {
       "id_puerto":18,
-      "nombre":"Puerto_Santa_Marta",
+      "nombre":"Puerto Santa Marta",
       "distancia":150
    }
    ,
    {
       "id_puerto":19,
-      "nombre":"Puerto_Barranquilla",
+      "nombre":"Puerto Barranquilla",
       "distancia":100
    }
    ,
    {
       "id_puerto":20,
-      "nombre":"Puerto_Gamarra",
+      "nombre":"Puerto Gamarra",
       "distancia":190
    }
 ]

@@ -73,7 +73,7 @@ puertosRutas.post("/listarPuerto", function(req, res) {
 
 puertosRutas.post("/listarDistanciaPuerto", function(req, res) {
     const { origen, destino } = req.body;
-    const portA = determinarPuerto(origen);
+    //const portA = determinarPuerto(origen);
     //console.log(portA);
     // Se buscan los puertos en BD para determinar sus distancias
     const puertoA = distancias.find(d => d.nombre.toLowerCase() === origen.toLowerCase());

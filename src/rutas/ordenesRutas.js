@@ -21,8 +21,6 @@ const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, or
  ordenesRutas.post("/registrarOrden", function(req, res) {
     // Se recibe un json con toda la informacion respectiva para crear una nueva orden
     const { art, height, width, length, weight, origen, destino, descr } = req.body;
-    // Se obtiene el numero de documento para revisar si el usuario ya existe
-    //const id = req.body.document;
     // Se hace un loop para determinar el valor de la ultima orden
     let last = 0;
     for(var i = 0; i < ordenes.length; i++) {
@@ -40,11 +38,11 @@ const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, or
         res.send({estado : "error", msg : "Ya existe una orden registrada."});
     } else { // de lo contrario:
         // Se crea una variable newOrder donde a cada Key se le asigna los valores que vienen del json del front end
-        const newOrder = {id_orden: orderId, articulo: art, largo: length, ancho: width, alto: height, peso: weight, puertoOrigen: origen, PuertoDestino: destino, Descripcion: descr, estado_orden: "Registro-Embarque" };
+        const newOrder = {id_orden: orderId, articulo: art, largo: length, ancho: width, alto: height, peso: weight, puerto_origen: origen, puerto_destino: destino, Descripcion: descr, estado_orden: "preparando para Embarcar" };
         // Se agrega la nueva orden a base de datos
         ordenes.push(newOrder);
         // Se confirma que se estan recibiendo todos los datos correspondientes
-        console.log(ordenes);
+        // console.log(ordenes);
         // Se envia estado y mensaje al front end para confirmar que la orden fue creada con un ID, que se le entrega al usuario
         res.send({estado : "ok", msg : `Orden creada exitosamente con ID número ${orderId}. En la página de inicio podrá encontrar más detalles de su orden. Muchas gracias por usar nuestro servicio.`});
 
@@ -63,7 +61,7 @@ const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, or
 
  ordenesRutas.get("/listarOrdenDetalle/:orden", function(req, res) {
     const numero = req.params.orden;
-    console.log(numero);
+    //console.log(numero);
     const orden = ordenes.find(o => o.id_orden === parseInt(numero));
     if (orden != null && orden != undefined) {
         res.send({ estado: "ok", msg: "Orden encontrada con éxito.", orden })
@@ -96,8 +94,9 @@ ordenesRutas.get("/listarOrden/?estado=Finalizada", function(req, res) {
  * Datos de respuesta: { ordenes }
  */
 
- ordenesRutas.get("/listarOrden", function(req, res) {
-    res.send("Muestra los datos de la orden")
+ ordenesRutas.post("/listarOrden", function(req, res) {
+    //console.log(puertos);
+    res.send({ estado: "ok", data: ordenes })
 })
 
 
@@ -113,8 +112,36 @@ ordenesRutas.get("/listarOrden/?estado=Finalizada", function(req, res) {
  */
 
 ordenesRutas.post("/editarOrden", function(req, res) {
-    res.send("Actualiza los datos de la orden")
+    // Desestructuracion
+    const {numero, art, height, width, length, weight, origen, destino, descr} = req.body;
+    // Se hacen las alertas predeterminadas
+    let alerta = "error";
+    let mensaje = "La orden no se encuentra registrada en nuestra base de datos"
+    let i = 0;
+    for (const o of ordenes) {
+        if (o.id_orden === numero) {
+            if (o.estado_orden === "Finalizada" || o.estado_orden === "Despachada") {
+                alerta = "error"
+                mensaje = "La orden ya fue despachada por ende no se puede editar."
+            } else {
+                ordenes[i].articulo = art;
+                ordenes[i].altura = height;
+                ordenes[i].ancho = width;
+                ordenes[i].largo = length;
+                ordenes[i].peso = weight;
+                ordenes[i].puerto_origen = origen;
+                ordenes[i].puerto_destino = destino;
+                ordenes[i].descripcion = descr;
+                alerta = "ok";
+                mensaje = "Orden editada exitosamente"
+                break;
+            }       
+        }
+        i++;
+    }
+    res.send({estado : alerta, msg : mensaje});
 })
+
 
 
 exports.ordenesRutas = ordenesRutas;
