@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const userRutas = Router();
-const { userModel } = require("../modelos/usuarioModel");
+const { usuarioModel } = require("../modelos/usuarioModel");
 const { compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 //const { userGuard } = require("../guards/userGuard");
@@ -18,8 +18,29 @@ const { login, loginUpdate, registroUsuario, usuarioRegistrado, usuarios } = req
  * Respuesta: { loginUpdate }
  */
 
-userRutas.post("/login", function(req, res) {
-    res.send("Autenticación de usuarios")
+userRutas.post("/login", async function(req, res) {
+    //Capturar usuario / password
+    const { documento, password } = req.body;
+    // Comprobrar el usuario exista en BD
+    const user = await usuarioModel.findOne({ documento });
+
+    if (!user) {
+        return res.status(401).json({ estado: "error", msg: "ERROR: Credenciales inválidas 1" })
+    }
+    // Comparar la contraseña 
+    const passOK = await compare(password, user.password);
+    if (passOK === true) {
+        const token = sign(
+            {
+                usuario: user.documento,
+                rol: user.perfil
+            },
+            process.env.JWT_SECRET_KEY
+        )
+        return res.status(200).json({ estado: "ok", msg: "Logueado", token });
+    }
+    return res.status(401).json({ estado: "error", msg: "ERROR: Credenciales inválidas 2" });
+    // Dar/denegar acceso
 })
 
 
@@ -27,7 +48,7 @@ userRutas.post("/login", function(req, res) {
  * API Rest Modulo de registro de usuarios
  * Descripcion: Registra los usuarios a la plataforma
  * Ruta: /registrarUsuario
- * Metodo: POST
+ * Metodo: POSTs
  * Headers:"Content-Type: application/json"
  * Datos de entrada:  { registroUsuario }
  * Respuesta: { usuarioRegistrado }
