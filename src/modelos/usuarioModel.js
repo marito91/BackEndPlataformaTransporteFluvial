@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { genSalt, hash } = require("bcryptjs");
+const { model, Schema } = require("mongoose");
 
-const usuarioModel = new Schema(
+const usuarioSchema = new Schema(
     {
         nombre:{
             type: "string",
@@ -38,4 +38,12 @@ const usuarioModel = new Schema(
     }
 );
 
-module.exports = mongoose.model("usuario", usuarioModel);
+usuarioSchema.pre("save", async function (next) {
+    const salt = await genSalt(10);
+    this.password = await hash(this.password, salt);
+    next();
+});
+
+const usuarioModel = model("usuario", usuarioSchema);
+
+exports.usuarioModel = usuarioModel;
