@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const userRutas = Router();
 const { usuarioModel } = require("../modelos/usuarioModel");
+const Usuario = require("../modelos/usuarioModel");
 const { compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 //const { userGuard } = require("../guards/userGuard");
@@ -41,7 +42,7 @@ userRutas.post("/login", async function(req, res) {
     }
     return res.status(401).json({ estado: "error", msg: "ERROR: Credenciales inválidas 2" });
     // Dar/denegar acceso
-})
+});
 
 
 /**
@@ -55,6 +56,7 @@ userRutas.post("/login", async function(req, res) {
  */
 
 userRutas.post("/registrarUsuario", function(req, res) {
+ /* Codigo Local NO DATABASE
     // Se recibe un json con toda la informacion respectiva para crear un usuario nuevo
     const {nom, lastName, documentType, document, emailAddress, userType, phone, password} = req.body;
     // Se obtiene el numero de documento para revisar si el usuario ya existe
@@ -87,9 +89,47 @@ userRutas.post("/registrarUsuario", function(req, res) {
         console.log(usuarios);
         // Se envia estado y mensaje al front end para confirmar que el usuario se registro
         res.send({estado : "ok", msg : "Usuario Registrado"});
-
     }
-  
+    */
+
+    // Aqui inicia el codigo con base de datos
+
+    // Se recibe un json con toda la informacion respectiva para crear un usuario nuevo
+    const {nom, lastName, documentType, document, emailAddress, userType, phone, password} = req.body;
+    // Se determina el tipo de perfil segun la informacion que recibe
+    if (userType === 'Item 2') {
+        profile = "1";
+    } else if (userType === 'Item 3') {
+        profile = "2";
+    }
+    // Se determina el tipo de documento segun la informacion que recibe
+    if (documentType === 'Item 2') {
+        idType = "C.C";
+    } else if (documentType === 'Item 3') {
+        idType = "C.E";
+    } else if (documentType === 'Item 4') {
+        idType = "NIT";
+    }
+
+    // Se hace una busqueda del documento para ver si ya existe
+    usuarioModel.findOne({documento: document}, function (error, oldUser) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: al buscar usuario" });
+        } else {
+            if (oldUser !== null) {
+                return res.send({ estado: "ok", msg: "Error: El usuario ya se encuentra registrado en el sistema." });
+            } else {
+                // Se crea un nuevo usuario con una instancia del modelo de usuario y se le agrega toda la informacion que viene del front
+                const newUser = new usuarioModel({nombre: nom, apellido: lastName, tipo_documento: idType, documento: document, email: emailAddress, perfil: profile, telefono: phone, password: password});
+                newUser.save(function (error) {
+                    if (error) {
+                        return res.send({ estado: "error", msg: "ERROR: Al registrar nuevo usuario." });
+                    }
+                    res.send({ estado: "ok", msg: "Usuario registrado exitosamente." });
+                });
+            }
+        }
+    })
 })
 
 

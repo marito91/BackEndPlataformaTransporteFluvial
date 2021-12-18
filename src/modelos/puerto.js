@@ -14,8 +14,12 @@ const puertoModel = new Schema(
         },
         distancia:{
             type: "number"
+        },
+        puerto_id:{
+            type: "number",
         }
+
     }
 );
 
-module.exports = mongoose.model("puerto", puertoModel);
+module.exports = mongoose.model("puertos", puertoModel);

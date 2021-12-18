@@ -48,8 +48,12 @@ const ordenModel = new Schema(
         costo:{
             type: "string",
             required:true
+        },
+        usuario:{
+            type: "string",
+            required:true
         }
     }
 );
 
-module.exports = mongoose.model("orden", ordenModel);
+module.exports = mongoose.model("ordenes", ordenModel);

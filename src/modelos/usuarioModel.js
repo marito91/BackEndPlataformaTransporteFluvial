@@ -44,6 +44,6 @@ usuarioSchema.pre("save", async function (next) {
     next();
 });
 
-const usuarioModel = model("usuario", usuarioSchema);
+const usuarioModel = model("usuarios", usuarioSchema);
 
 exports.usuarioModel = usuarioModel;
