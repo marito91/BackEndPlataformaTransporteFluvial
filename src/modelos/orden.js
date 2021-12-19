@@ -3,15 +3,19 @@ const { model, Schema } = require("mongoose");
 
 const ordenSchema = new Schema(
     {
+        order_id:{
+            type:"number",
+            required:true
+        },
         fecha_origen_orden:{
-            type: "date",
+            type: "string",
             required:true
         },
         nombre_contenedor:{
             type: "string",
             required:true
         },
-        descripcion_contendeor:{
+        descripcion_contenedor:{
             type: "string",
             required:true
         },

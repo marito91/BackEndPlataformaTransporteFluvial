@@ -1,11 +1,15 @@
 const { Router } = require("express");
 const ordenesRutas = Router();
 const { ordenModel } = require("../modelos/orden");
+const { puertoModel } = require("../modelos/puerto");
+const { configModel } = require("../modelos/configuracion");
 const { compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 //const { userGuard } = require("../guards/userGuard");
 
 const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, ordenUpdate } = require("../datos");
+
+const tasaDolar = 4000;
 
 
 
@@ -52,7 +56,7 @@ const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, or
 
     }
 */
-
+/* ------------------------------------------------------Seccion para determinar fecha---------------------------------------------------------------*/
     // Nuevo objeto para determinar fecha
     let date_ob = new Date();
 
@@ -76,10 +80,88 @@ const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, or
     let seconds = date_ob.getSeconds();
 
     // prints date & time in YYYY-MM-DD HH:MM:SS format
+    const defDate = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds
     console.log(year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds);
+
+/* ------------------------------------------------------Seccion para determinar fecha---------------------------------------------------------------*/
+
 
     // Se recibe un json con toda la informacion respectiva para crear una nueva orden
     const { art, height, width, length, weight, origen, destino, descr } = req.body;
+
+
+    ordenModel.find({}, (error, order) => { 
+        if (error) {
+            console.log(error)
+        } else {
+            const orders = order.map(o => o);
+            // Se verifica que se hayan registrado las ordenes een el array
+            console.log(orders);
+
+            // Se hace un loop para determinar el valor de la ultima orden
+            let last = 0;
+            for(var i = 0; i < orders.length; i++) {
+                var obj = orders[i];
+                if (last <= obj.order_id) {
+                    last += 1;
+                }
+            }
+            // Se asigna un nuevo numero de orden
+            const orderId = last + 1;
+            console.log(orderId)
+  
+
+            // Se hace una busqueda del documento para ver si ya existe
+            ordenModel.findOne({order_id: orderId}, function (error, oldOrder) {
+                if (error) {
+                    return res.send({ estado: "error", msg: "ERROR: al buscar orden" });
+                } else {
+                    if (oldOrder !== null && oldOrder !== undefined) {
+                        return res.send({ estado: "ok", msg: "Error: La orden ya se encuentra registrada en el sistema." });
+                    } else {
+/*--------------------------------------------------------Modulo para calcular precio a pagar-------------------------------------------------------*/
+                        puertoModel.find({ nombre_puerto: {$in: [origen, destino] } }, (error, port) => { 
+                            if (error) {
+                                return res.send({ estado: "error", msg: "Error: Uno de los puertos no aparece registrado en nuestro sistema." });
+                            } else {
+                                const ports = port.map(p => p);
+                                // Se verifica que se hayan registrado ambos puertos
+                                console.log(ports);
+                                // Se suman las distancias de ambos puertos para determinar el valor a pagar
+                                const distancia = ports[0].distancia + ports[1].distancia;
+                                // Se verifica que se haya sumado la distancia
+                                console.log(distancia);
+                                // Se busca el valor de la milla actual
+                                configModel.find({}, (error, milla) => {
+                                    if (error) {
+                                        return res.send({ estado: "error", msg: "No se pudo validar el precio a pagar." });
+                                    } else {
+                                        console.log(milla);
+                                        // Se calcula el valor en pesos segun la tasa del dolar manifestada al inicio del archivo
+                                        const pesos = milla[0].valor * tasaDolar;
+                                        // Se determina el precio total a cancelar en pesos segun la distancia de ambos puertos
+                                        const precio = pesos * distancia;
+
+/*------------------------------------------------------------Modulo para crear nueva orden---------------------------------------------------------*/
+                                        // Se crea una nueva orden con una instancia del modelo de orden y se le agrega toda la informacion que viene del front
+                                        const newOrder = new ordenModel( {order_id: orderId, fecha_origen_orden: defDate, nombre_contenedor: art, descripcion_contenedor: descr, peso_contenedor: weight, ancho_contenedor: width, alto_contenedor: height, largo_contenedor: length, puerto_origen: origen, puerto_destino: destino, estado_orden: "Preparando para Embarcar",costo: precio, usuario:""});
+                                        console.log(newOrder)
+                                        newOrder.save(function (error) {
+                                            if (error) {
+                                                return res.send({ estado: "error", msg: "ERROR: Al registrar nueva orden." });
+                                            } else {
+                                                return res.send({ estado: "ok", msg: "Orden registrada exitosamente." });
+                                            }
+                                        });
+                                    }
+                                })
+                            }
+                        });   
+                    }
+                }
+            })
+        }
+    });
 
 })
 

@@ -178,6 +178,8 @@ puertosRutas.post("/listarDistanciaPuerto", function(req, res) {
 */
 
 puertosRutas.post("/editarCostoMilla", function(req, res) {
+
+    /*
     // Recibe el valor en dolares del Front
     const { dolares } = req.body;
     // Se hace seguimiento de como llega el valor
@@ -186,6 +188,19 @@ puertosRutas.post("/editarCostoMilla", function(req, res) {
     costo.valor = dolares;
 
     res.send({estado: "ok", msg:"Costo de milla actualizado satisfactoriamente"});
+    */
+
+   // Se recibe info del front
+    const { dolares } = req.body;
+
+    // Se actualiza el valor de la milla en BD
+    configModel.updateOne({}, { $set: { valor: dolares } }, function (error) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: Al configurar el costo de la milla." });
+        } else {
+            return res.send({ estado: "ok", msg: "Costo de milla actualizado satisfactoriamente."});
+        }
+    })   
 });
 
 
@@ -199,6 +214,8 @@ puertosRutas.post("/editarCostoMilla", function(req, res) {
 */
 
 puertosRutas.post("/verCostoMilla", function(req, res) {
+
+/* Codigo con datos locales
     // Hace la conversion a pesos segun el valor en doalres
     const pesos = costo.valor * tasaDolar;
     // Se hace seguimiento por consola para ver si la operacion es correcta
@@ -206,12 +223,26 @@ puertosRutas.post("/verCostoMilla", function(req, res) {
     //console.log(costo.valor);
     // Envia un estado ok, con un mensaje y los respectivos valores en dolares y pesos
     res.send({ estado: "ok", msg: "Costo de milla actual", data: costo.valor, pesos });
-})
+
+*/
+
+    // Se busca el valor actual de la milla en BD
+    configModel.findOne({}, function (error, costo) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: Al identificar el costo de la milla." });
+        } else {
+            // Hace la conversion a pesos segun el valor en dolares
+            const pesos = costo.valor * tasaDolar;
+            // Envia un estado ok, con un mensaje y los respectivos valores en dolares y pesos
+            return res.send({ estado: "ok", msg: "Costo de milla actual", data: costo.valor, pesos });
+        }
+    })
+});
 
 
 
 /**
-* API Rest Modulo de eliminar puetos
+* API Rest Modulo de eliminar puertos
 * Descripcion: Elimina los puertos registrados
 * Ruta: /eliminarPuerto
 * Metodo: POST
