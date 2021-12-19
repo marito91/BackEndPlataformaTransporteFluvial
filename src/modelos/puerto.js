@@ -1,13 +1,13 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { model, Schema } = require("mongoose");
 
-const puertoModel = new Schema(
+
+const puertoSchema = new Schema(
     {
-		_id:{
+		/*_id:{
 			unique: true,
             type: "number",
             required:true
-        },
+        },*/
         nombre_puerto:{
             type: "string",
             required:true
@@ -22,4 +22,6 @@ const puertoModel = new Schema(
     }
 );
 
-module.exports = mongoose.model("puertos", puertoModel);
+const puertoModel = model("puertos", puertoSchema);
+
+exports.puertoModel = puertoModel;

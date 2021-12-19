@@ -143,16 +143,23 @@ userRutas.post("/registrarUsuario", function(req, res) {
  */
 
  userRutas.get("/listarUsuario/:documento", function(req, res) {
-    let alerta = "No se encontró el usuario solicitado"
-    let estado = "error"
+    let alerta = "No se encontró el usuario solicitado";
+    let estado = "error";
     const document = req.params.documento; //Viene un json {numero_documento:"24526698"}
-    const oldUser = usuarios.find(u => u.numero_documento === document);
-
-    if (oldUser != null && oldUser != undefined) {
-        alerta = "Usuario encontrado exitosamente"
-        estado = "ok"
-    }
-    res.send({estado: estado, msg: alerta, data: oldUser})
+    // Se hace una busqueda del documento para ver si ya existe
+    usuarioModel.findOne({documento: document}, function (error, oldUser) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: al buscar usuario" });
+        } else {
+            if (oldUser !== null && oldUser != undefined) {
+                alerta = "Usuario encontrado exitosamente"
+                estado = "ok"
+                return res.send({estado: estado, msg: alerta, data: oldUser});
+            } else {
+                return res.send({estado: estado, msg: alerta, data: oldUser});
+            } 
+        }
+    })
 }); 
 
 
@@ -167,6 +174,7 @@ userRutas.post("/registrarUsuario", function(req, res) {
  */
 
  userRutas.post("/editarUsuario", function(req, res) {
+/*
     // Desestructuracion
     const {nom, lastName, documentType, document, emailAddress, userType, phone, password} = req.body;
     // Se hacen las alertas predeterminadas
@@ -205,7 +213,40 @@ userRutas.post("/registrarUsuario", function(req, res) {
         i++;
     }
     res.send({estado : alerta, msg : mensaje});
-}); 
+*/
+
+    // Se trae la informacion del Front
+    const {nom, lastName, documentType, document, emailAddress, userType, phone, password} = req.body;
+    // Se identifican los valores de tipo de usuario y tipo de documento
+    if (userType === 'Item 2') {
+        profile = "1";
+    } else if (userType === 'Item 3') {
+        profile = "2";
+    }
+    // Se determina el tipo de documento segun la informacion que recibe
+    if (documentType === 'Item 2') {
+        idType = "C.C";
+    } else if (documentType === 'Item 3') {
+        idType = "C.E";
+    } else if (documentType === 'Item 4') {
+        idType = "NIT";
+    }
+    usuarioModel.findOne({documento: document}, function (error, oldUser) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: al buscar usuario" });
+        } else {
+            if (oldUser !== null && oldUser !== undefined) {
+                usuarioModel.updateOne({ documento: document }, { $set: { nombre: nom, apellido: lastName, tipo_documento: idType, documento: document, email: emailAddress, perfil: profile, telefono: phone, /*password: password*/ } }, function (error) {
+                    if (error) {
+                        return res.send({ estado: "error", msg: "ERROR: Al editar el usuario" });
+                    } else {
+                        res.send({ estado: "ok", msg: "Usuario editado" });
+                    }
+                });
+            } 
+        }
+    });    
+ }); 
 
 
 /**
@@ -217,6 +258,8 @@ userRutas.post("/registrarUsuario", function(req, res) {
  * Respuesta: {estado : "ok", mensaje : "Usuario Eliminado"}
  */
  userRutas.post("/eliminarUsuario", function(req,res) {
+
+    /* Codigo para eliminar usuario local
     // Desestructuracion
     const { document } = req.body;
     // Buscar el usuario a Eliminar
@@ -229,6 +272,29 @@ userRutas.post("/registrarUsuario", function(req, res) {
         i++;
     }
     res.send({estado : "ok", msg : "Usuario Eliminado"});
+
+*/
+
+// Codigo para eliminar usuario en base de datos
+    // Desestructuracion
+    const { document } = req.body;
+    usuarioModel.findOne({documento: document}, function (error, oldUser) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: al buscar usuario" });
+        } else {
+            if (oldUser !== null && oldUser !== undefined) {
+                usuarioModel.remove({ documento: document }, function (error) {
+                    if (error) {
+                        return res.send({ estado: "error", msg: "ERROR: Al eliminar el usuario" });
+                    } else {
+                        res.send({ estado: "ok", msg: "Usuario eliminado exitosamente." });
+                    }
+                });
+            } 
+        }
+    });    
+
+
 })
 
 exports.userRutas = userRutas;

@@ -1,13 +1,14 @@
 const { Router } = require("express");
 const puertosRutas = Router();
-const { puertosModel } = require("../modelos/puerto");
+const { puertoModel } = require("../modelos/puerto");
+const { configModel } = require("../modelos/configuracion");
 const { compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 //const { userGuard } = require("../guards/userGuard");
 
 const { registroPuerto, puertoRegistrado, puertos, distanciaPuertos, costoMilla, costoUpdate, costo, distancias } = require("../datos");
 
-const tasaDolar = 3900;
+const tasaDolar = 4000;
 
 /**
  * API Rest Modulo de registro de puertos
@@ -20,6 +21,9 @@ const tasaDolar = 3900;
  */
 
  puertosRutas.post("/registrarPuerto", function(req, res) {
+
+/* Codigo para realizar registro de orden de manera local
+
     // Se recibe un json con toda la informacion respectiva para crear un usuario nuevo
     const {nomPto, idPto, distPto, munPto, rioPto} = req.body;
     // Se obtiene el numero de documento para revisar si el usuario ya existe
@@ -40,9 +44,34 @@ const tasaDolar = 3900;
         res.send({estado : "ok", msg : "Puerto registrado exitosamente."});
 
     }
+    */
+
+    // Inicio del codigo con base de datos
+
+    // Se recibe un json con toda la informacion respectiva para crear un usuario nuevo
+    const {nomPto, idPto, distPto, munPto, rioPto} = req.body;
+    // Se obtiene el numero de documento para revisar si el usuario ya existe
+    //const port = req.body.idPto;
+    // Se hace una busqueda del documento para ver si ya existe
+    puertoModel.findOne({puerto_id: idPto}, function (error, oldPort) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: en el proceso" });
+        } else {
+            if (oldPort !== null && oldPort !== undefined) {
+                return res.send({ estado: "ok", msg: "Error: El puerto ya se encuentra registrado en nuestra base de datos." });
+            } else {
+                // Se crea un nuevo usuario con una instancia del modelo de usuario y se le agrega toda la informacion que viene del front
+                const newPort = new puertoModel({ nombre_puerto: nomPto, puerto_id: idPto, distancia: distPto});
+                newPort.save(function (error) {
+                    if (error) {
+                        return res.send({ estado: "error", msg: "ERROR: Al registrar un nuevo puerto" });
+                    }
+                    res.send({ estado: "ok", msg: "Puerto registrado exitosamente." });
+                });
+            }
+        }
+    })
 })
-
-
 
 
 
@@ -56,8 +85,14 @@ const tasaDolar = 3900;
 */
 
 puertosRutas.post("/listarPuerto", function(req, res) {
-    //console.log(puertos);
-    res.send({ estado: "ok", data: puertos })
+    puertoModel.find({}, (error, port) => {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: en el proceso" });
+        } else {
+            const ports = port.map(p => p);
+            res.send({ estado: "ok", data: ports })
+        }
+      });
 })
 
 
@@ -72,6 +107,8 @@ puertosRutas.post("/listarPuerto", function(req, res) {
 */
 
 puertosRutas.post("/listarDistanciaPuerto", function(req, res) {
+
+/* Codigo para manejo de datos locales
     const { origen, destino } = req.body;
     //const portA = determinarPuerto(origen);
     //console.log(portA);
@@ -91,6 +128,41 @@ puertosRutas.post("/listarDistanciaPuerto", function(req, res) {
     //console.log(precio)
 
     res.send({ estado:"ok", msg:"Distancia y valor calculado", distancia, precio })
+
+*/
+    let alerta = "No se pudo realizar la operación"
+    let estado = "error"
+    // Se reciben los datos de origen para poder hacer los calculos
+    const { origen, destino } = req.body;
+    // Se buscan los puertos en BD para determinar sus distancias
+    puertoModel.find({ nombre_puerto: {$in: [origen, destino] } }, (error, port) => { 
+        if (error) {
+            return res.send({ estado: "error", msg: "Error: Uno de los puertos no aparece registrado en nuestro sistema." });
+        } else {
+            const ports = port.map(p => p);
+            // Se verifica que se hayan registrado ambos puertos
+            console.log(ports);
+            // Se suman las distancias de ambos puertos para determinar el valor a pagar
+            const distancia = ports[0].distancia + ports[1].distancia;
+            // Se verifica que se haya sumado la distancia
+            console.log(distancia);
+            // Se busca el valor de la milla actual
+            configModel.find({}, (error, costo) => {
+                if (error) {
+                    return res.send({ estado: "error", msg: "No se pudo validar el precio a pagar." });
+                } else {
+                    console.log(costo);
+                    // Se calcula el valor en pesos segun la tasa del dolar manifestada al inicio del archivo
+                    const pesos = costo[0].valor * tasaDolar;
+                    // Se determina el precio total a cancelar en pesos segun la distancia de ambos puertos
+                    const precio = pesos * distancia;
+                    console.log(precio)
+                    // Se envia la info al front
+                    return res.send({ estado: "ok", msg: "Distancia y valor calculado exitosamente.", distancia, precio });
+                }
+            })
+        }
+    });   
 })
 
 
@@ -139,16 +211,32 @@ puertosRutas.post("/verCostoMilla", function(req, res) {
 
 
 /**
-* API Rest Modulo de puertos
-* Descripcion: Identifica la distancia entre los puertos
-* Ruta: /listarPuertoDistancia
-* Metodo: GET
+* API Rest Modulo de eliminar puetos
+* Descripcion: Elimina los puertos registrados
+* Ruta: /eliminarPuerto
+* Metodo: POST
 * Headers:"Content-Type: application/json"
-* Datos de respuesta: { distancias }
+* Datos de respuesta: { msg }
 */
 
-puertosRutas.get("/listarPuertoDistancia", function(req, res) {
-    res.send("Identifica la distancia entre los puertos")
+puertosRutas.post("/eliminarPuerto", function(req, res) {
+    // Desestructuracion
+    const { puerto } = req.body;
+    puertoModel.findOne({puerto_id: puerto}, function (error, oldPort) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: No se encontró el puerto solicitado." });
+        } else {
+            if (oldPort !== null && oldPort !== undefined) {
+                puertoModel.remove({ puerto_id: puerto }, function (error) {
+                    if (error) {
+                        return res.send({ estado: "error", msg: "ERROR: Al eliminar el puerto" });
+                    } else {
+                        res.send({ estado: "ok", msg: "Puerto eliminado exitosamente." });
+                    }
+                });
+            } 
+        }
+    });    
 })
 
 

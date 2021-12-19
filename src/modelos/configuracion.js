@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { model, Schema } = require("mongoose");
 
-const configuracionModel = new Schema(
+const configuracionSchema = new Schema(
     {
         descripcion:{
             type: "string",
@@ -14,4 +13,7 @@ const configuracionModel = new Schema(
     }
 );
 
-module.exports = mongoose.model("configuracion", configuracionModel);
+
+const configModel = model("configuraciones", configuracionSchema);
+
+exports.configModel = configModel;

@@ -8,6 +8,7 @@ const { sign } = require("jsonwebtoken");
 const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, ordenUpdate } = require("../datos");
 
 
+
 /**
  * API Rest Modulo de registro de órdenes
  * Descripcion: Registra las ordenes de los usuarios
@@ -19,6 +20,9 @@ const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, or
  */
 
  ordenesRutas.post("/registrarOrden", function(req, res) {
+
+/* Codigo para realizar registro de orden de manera local
+
     // Se recibe un json con toda la informacion respectiva para crear una nueva orden
     const { art, height, width, length, weight, origen, destino, descr } = req.body;
     // Se hace un loop para determinar el valor de la ultima orden
@@ -47,6 +51,36 @@ const { registroOrden, newOrden, ordenDetalle, estados, ordenes, editarOrden, or
         res.send({estado : "ok", msg : `Orden creada exitosamente con ID número ${orderId}. En la página de inicio podrá encontrar más detalles de su orden. Muchas gracias por usar nuestro servicio.`});
 
     }
+*/
+
+    // Nuevo objeto para determinar fecha
+    let date_ob = new Date();
+
+    // current date
+    // adjust 0 before single digit date
+    let date = ("0" + date_ob.getDate()).slice(-2);
+
+    // current month
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+
+    // current year
+    let year = date_ob.getFullYear();
+
+    // current hours
+    let hours = date_ob.getHours();
+
+    // current minutes
+    let minutes = date_ob.getMinutes();
+
+    // current seconds
+    let seconds = date_ob.getSeconds();
+
+    // prints date & time in YYYY-MM-DD HH:MM:SS format
+    console.log(year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds);
+
+    // Se recibe un json con toda la informacion respectiva para crear una nueva orden
+    const { art, height, width, length, weight, origen, destino, descr } = req.body;
+
 })
 
 

@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { model, Schema } = require("mongoose");
 
-const ordenModel = new Schema(
+
+const ordenSchema = new Schema(
     {
         fecha_origen_orden:{
             type: "date",
@@ -56,4 +56,6 @@ const ordenModel = new Schema(
     }
 );
 
-module.exports = mongoose.model("ordenes", ordenModel);
+const ordenModel = model("ordenes", ordenSchema);
+
+exports.ordenModel = ordenModel;
