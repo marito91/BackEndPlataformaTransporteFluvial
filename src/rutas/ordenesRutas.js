@@ -56,6 +56,7 @@ const tasaDolar = 4000;
 
     }
 */
+
 /* ------------------------------------------------------Seccion para determinar fecha---------------------------------------------------------------*/
     // Nuevo objeto para determinar fecha
     let date_ob = new Date();
@@ -87,15 +88,15 @@ const tasaDolar = 4000;
 
 
     // Se recibe un json con toda la informacion respectiva para crear una nueva orden
-    const { art, height, width, length, weight, origen, destino, descr } = req.body;
+    const { user, art, height, width, length, weight, origen, destino, descr } = req.body;
 
 
     ordenModel.find({}, (error, order) => { 
         if (error) {
-            console.log(error)
+            return res.send({ estado: "error", msg: "ERROR: al buscar ordenes." });
         } else {
             const orders = order.map(o => o);
-            // Se verifica que se hayan registrado las ordenes een el array
+            // Se verifica que se hayan registrado las ordenes en el array
             console.log(orders);
 
             // Se hace un loop para determinar el valor de la ultima orden
@@ -144,13 +145,13 @@ const tasaDolar = 4000;
 
 /*------------------------------------------------------------Modulo para crear nueva orden---------------------------------------------------------*/
                                         // Se crea una nueva orden con una instancia del modelo de orden y se le agrega toda la informacion que viene del front
-                                        const newOrder = new ordenModel( {order_id: orderId, fecha_origen_orden: defDate, nombre_contenedor: art, descripcion_contenedor: descr, peso_contenedor: weight, ancho_contenedor: width, alto_contenedor: height, largo_contenedor: length, puerto_origen: origen, puerto_destino: destino, estado_orden: "Preparando para Embarcar",costo: precio, usuario:""});
-                                        console.log(newOrder)
+                                        const newOrder = new ordenModel( {order_id: orderId, fecha_origen_orden: defDate, nombre_contenedor: art, descripcion_contenedor: descr, peso_contenedor: weight, ancho_contenedor: width, alto_contenedor: height, largo_contenedor: length, puerto_origen: origen, puerto_destino: destino, estado_orden: "Preparando para Embarcar",costo: precio, usuario: user});
+                                        console.log(newOrder)                         
                                         newOrder.save(function (error) {
                                             if (error) {
                                                 return res.send({ estado: "error", msg: "ERROR: Al registrar nueva orden." });
                                             } else {
-                                                return res.send({ estado: "ok", msg: "Orden registrada exitosamente." });
+                                                return res.send({ estado: "ok", msg: `Orden creada exitosamente con ID número ${orderId}. En la página de inicio podrá encontrar más detalles de su orden. Muchas gracias por usar nuestro servicio.` });
                                             }
                                         });
                                     }
@@ -162,7 +163,6 @@ const tasaDolar = 4000;
             })
         }
     });
-
 })
 
 
@@ -176,6 +176,8 @@ const tasaDolar = 4000;
  */
 
  ordenesRutas.get("/listarOrdenDetalle/:orden", function(req, res) {
+    
+    /* Codigo para datos almacenados localmente
     const numero = req.params.orden;
     //console.log(numero);
     const orden = ordenes.find(o => o.id_orden === parseInt(numero));
@@ -184,6 +186,21 @@ const tasaDolar = 4000;
     } else {
         res.send({ estado: "error", msg: "No se encontró la orden solicitada" })
     }
+    */
+   // Se obtiene el parametro de la ruta
+    const numero = parseInt(req.params.orden);
+
+    ordenModel.findOne({order_id: numero}, function(error, orden) {
+        if (error) {
+            return res.send({ estado: "error", msg: "No se encontró la orden solicitada." })
+        } else {
+            if (orden != null && orden != undefined) {
+                res.send({ estado: "ok", msg: "Orden encontrada con éxito.", orden })
+            } else {
+                res.send({ estado: "error", msg: "No se encontró la orden solicitada" })
+            }
+        }
+    })
 })
 
 
@@ -211,8 +228,23 @@ ordenesRutas.get("/listarOrden/?estado=Finalizada", function(req, res) {
  */
 
  ordenesRutas.post("/listarOrden", function(req, res) {
+    
+    /* Codigo para datos almacenados localmente
     //console.log(puertos);
     res.send({ estado: "ok", data: ordenes })
+    */
+
+    ordenModel.find({}, function(error, ordenes) {
+        if (error) {
+            return res.send({ estado: "error", msg: "No se encontraron órdenes." })
+        } else {
+            if (ordenes != null && ordenes != undefined) {
+                res.send({ estado: "ok", msg: "Ordenes encontradas con éxito.", data: ordenes })
+            } else {
+                res.send({ estado: "error", msg: "No se encontraron órdenes." })
+            }
+        }
+    })
 })
 
 
@@ -228,8 +260,10 @@ ordenesRutas.get("/listarOrden/?estado=Finalizada", function(req, res) {
  */
 
 ordenesRutas.post("/editarOrden", function(req, res) {
+
+/* Codigo para datos almacenados localmente
     // Desestructuracion
-    const {numero, art, height, width, length, weight, origen, destino, descr} = req.body;
+    const {numero, estado, art, height, width, length, weight, origen, destino, descr} = req.body;
     // Se hacen las alertas predeterminadas
     let alerta = "error";
     let mensaje = "La orden no se encuentra registrada en nuestra base de datos"
@@ -256,7 +290,62 @@ ordenesRutas.post("/editarOrden", function(req, res) {
         i++;
     }
     res.send({estado : alerta, msg : mensaje});
-})
+
+    */
+
+    // Desestructuracion
+    const {numero, art, height, width, length, weight, origen, destino, descr} = req.body;
+
+    ordenModel.findOne({order_id: numero}, function (error, oldOrder) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: al buscar orden duplicada." });
+        } else {
+            if (oldOrder !== null && oldOrder !== undefined) {
+                ordenModel.updateOne({ order_id: numero }, { $set: { nombre_contenedor: art, descripcion_contenedor: descr, peso_contenedor: weight, ancho_contenedor: width, alto_contenedor: height, largo_contenedor: length, puerto_origen: origen, puerto_destino: destino } }, function (error) {
+                    if (error) {
+                        return res.send({ estado: "error", msg: "ERROR: Al editar la orden." });
+                    } else {
+                        res.send({ estado: "ok", msg: "Orden actualizada satisfactoriamente." });
+                    }
+                });
+            } 
+        }
+    });
+}); 
+
+
+
+/**
+ * API Rest Modulo de actualizar estados
+ * Descripcion: Actualiza la información de las órdenes ya creadas
+ * Ruta: /editarEstado
+ * Metodo: POST
+ * Headers:"Content-Type: application/json"
+ * Datos de entrada: { estado }
+ * Datos de respuesta: { estadoupdate }
+ */
+
+ordenesRutas.post("/editarEstado", function(req, res) {
+
+    // Desestructuracion
+    const { numero, newEstado } = req.body;
+
+    ordenModel.findOne({order_id: numero}, function (error, oldOrder) {
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: al buscar orden duplicada." });
+        } else {
+            if (oldOrder !== null && oldOrder !== undefined) {
+                ordenModel.updateOne({ order_id: numero }, { $set: { estado_orden: newEstado } }, function (error) {
+                    if (error) {
+                        return res.send({ estado: "error", msg: "ERROR: Al editar el estado de la orden." });
+                    } else {
+                        res.send({ estado: "ok", msg: "Estado actualizado satisfactoriamente." });
+                    }
+                });
+            } 
+        }
+    });
+}); 
 
 
 
