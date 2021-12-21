@@ -165,6 +165,126 @@ const tasaDolar = 4000;
     });
 })
 
+/**
+ * API Rest Modulo de creación de órdenes por usuarios externos
+ * Descripcion: Registra las ordenes de los usuarios externos
+ * Ruta: /crearOrden
+ * Metodo: POST
+ * Headers:"Content-Type: application/json"
+ * Datos de entrada: { registroOrden }
+ * Respuesta: { newOrden }
+ */
+
+ ordenesRutas.post("/crearOrden", function(req, res) {
+
+/* ------------------------------------------------------Seccion para determinar fecha---------------------------------------------------------------*/
+    // Nuevo objeto para determinar fecha
+    let date_ob = new Date();
+
+    // current date
+    // adjust 0 before single digit date
+    let date = ("0" + date_ob.getDate()).slice(-2);
+
+    // current month
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+
+    // current year
+    let year = date_ob.getFullYear();
+
+    // current hours
+    let hours = date_ob.getHours();
+
+    // current minutes
+    let minutes = date_ob.getMinutes();
+
+    // current seconds
+    let seconds = date_ob.getSeconds();
+
+    // prints date & time in YYYY-MM-DD HH:MM:SS format
+    const defDate = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds
+    console.log(year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds);
+
+/* ------------------------------------------------------Seccion para determinar fecha---------------------------------------------------------------*/
+
+
+    // Se recibe un json con toda la informacion respectiva para crear una nueva orden
+    const { telefono, art, height, width, length, weight, origen, destino, descr } = req.body;
+
+
+    ordenModel.find({}, (error, order) => { 
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: al buscar ordenes." });
+        } else {
+            const orders = order.map(o => o);
+            // Se verifica que se hayan registrado las ordenes en el array
+            console.log(orders);
+
+            // Se hace un loop para determinar el valor de la ultima orden
+            let last = 0;
+            for(var i = 0; i < orders.length; i++) {
+                var obj = orders[i];
+                if (last <= obj.order_id) {
+                    last += 1;
+                }
+            }
+            // Se asigna un nuevo numero de orden
+            const orderId = last + 1;
+            console.log(orderId)
+  
+
+            // Se hace una busqueda del documento para ver si ya existe
+            ordenModel.findOne({order_id: orderId}, function (error, oldOrder) {
+                if (error) {
+                    return res.send({ estado: "error", msg: "ERROR: al buscar orden" });
+                } else {
+                    if (oldOrder !== null && oldOrder !== undefined) {
+                        return res.send({ estado: "ok", msg: "Error: La orden ya se encuentra registrada en el sistema." });
+                    } else {
+/*--------------------------------------------------------Modulo para calcular precio a pagar-------------------------------------------------------*/
+                        puertoModel.find({ nombre_puerto: {$in: [origen, destino] } }, (error, port) => { 
+                            if (error) {
+                                return res.send({ estado: "error", msg: "Error: Uno de los puertos no aparece registrado en nuestro sistema." });
+                            } else {
+                                const ports = port.map(p => p);
+                                // Se verifica que se hayan registrado ambos puertos
+                                console.log(ports);
+                                // Se suman las distancias de ambos puertos para determinar el valor a pagar
+                                const distancia = ports[0].distancia + ports[1].distancia;
+                                // Se verifica que se haya sumado la distancia
+                                console.log(distancia);
+                                // Se busca el valor de la milla actual
+                                configModel.find({}, (error, milla) => {
+                                    if (error) {
+                                        return res.send({ estado: "error", msg: "No se pudo validar el precio a pagar." });
+                                    } else {
+                                        console.log(milla);
+                                        // Se calcula el valor en pesos segun la tasa del dolar manifestada al inicio del archivo
+                                        const pesos = milla[0].valor * tasaDolar;
+                                        // Se determina el precio total a cancelar en pesos segun la distancia de ambos puertos
+                                        const precio = pesos * distancia;
+
+/*------------------------------------------------------------Modulo para crear nueva orden---------------------------------------------------------*/
+                                        // Se crea una nueva orden con una instancia del modelo de orden y se le agrega toda la informacion que viene del front
+                                        const newOrder = new ordenModel( {order_id: orderId, fecha_origen_orden: defDate, nombre_contenedor: art, descripcion_contenedor: descr, peso_contenedor: weight, ancho_contenedor: width, alto_contenedor: height, largo_contenedor: length, puerto_origen: origen, puerto_destino: destino, estado_orden: "Preparando para Embarcar",costo: precio, usuario: telefono});
+                                        console.log(newOrder)                         
+                                        newOrder.save(function (error) {
+                                            if (error) {
+                                                return res.send({ estado: "error", msg: "ERROR: Al registrar nueva orden." });
+                                            } else {
+                                                return res.send({ estado: "ok", msg: `Orden creada exitosamente con ID número ${orderId}. En breve lo estaremos contactando para ofrecerle más detalles de su orden. Muchas gracias por usar nuestro servicio.` });
+                                            }
+                                        });
+                                    }
+                                })
+                            }
+                        });   
+                    }
+                }
+            })
+        }
+    });
+})
+
 
 /**
  * API Rest Modulo de busqueda de ordenes
@@ -213,8 +333,33 @@ const tasaDolar = 4000;
  * Datos de respuesta: { estados }
  */
 
-ordenesRutas.get("/listarOrden/?estado=Finalizada", function(req, res) {
-    res.send("Se indica el estado de las ordenes")
+ordenesRutas.post("/listarOrden/factura", function(req, res) {
+
+    ordenModel.find({}, (error, order) => { 
+        if (error) {
+            return res.send({ estado: "error", msg: "ERROR: al buscar ordenes." });
+        } else {
+            const orders = order.map(o => o);
+            // Se verifica que se hayan registrado las ordenes en el array
+            //console.log(orders);
+
+            // Se hace un loop para determinar el valor de la ultima orden
+            let last = 0;
+            let finalOrder;
+            for(var i = 0; i < orders.length; i++) {
+                var obj = orders[i];
+                if (last <= obj.order_id) {
+                    last += 1;
+                    finalOrder = obj;
+                }
+            }
+            // Se asigna un nuevo numero de orden
+            const orderId = last;
+            console.log(orderId)
+            console.log(finalOrder)
+            res.send({ estado: "ok", msg: "Ultima orden encontrada", data: [finalOrder] });
+        }
+    })
 })
 
 
@@ -227,14 +372,16 @@ ordenesRutas.get("/listarOrden/?estado=Finalizada", function(req, res) {
  * Datos de respuesta: { ordenes }
  */
 
- ordenesRutas.post("/listarOrden", function(req, res) {
+ ordenesRutas.post("/listarOrden/:user", function(req, res) {
     
     /* Codigo para datos almacenados localmente
     //console.log(puertos);
     res.send({ estado: "ok", data: ordenes })
     */
 
-    ordenModel.find({}, function(error, ordenes) {
+    const username = req.params.user;
+
+    ordenModel.find({usuario: username}, function(error, ordenes) {
         if (error) {
             return res.send({ estado: "error", msg: "No se encontraron órdenes." })
         } else {

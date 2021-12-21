@@ -5,6 +5,7 @@
 //npm install cors --save
 //npm i mongoose (desde la carpeta back)
 //npm install jsonwebtoken bcryptjs --save (Instala los webtoken y bcrypt)
+//node require('crypto').randomBytes(32).toString('hex')
 
 
 const express = require("express");

@@ -21,12 +21,12 @@ const { login, loginUpdate, registroUsuario, usuarioRegistrado, usuarios } = req
 
 userRutas.post("/login", async function(req, res) {
     //Capturar usuario / password
-    const { documento, password } = req.body;
-    // Comprobrar el usuario exista en BD
-    const user = await usuarioModel.findOne({ documento });
+    const { usuario, password } = req.body;
+    // Comprobar el usuario exista en BD
+    const user = await usuarioModel.findOne({ documento: usuario });
 
     if (!user) {
-        return res.status(401).json({ estado: "error", msg: "ERROR: Credenciales inválidas 1" })
+        return res.status(401).json({ estado: "error", msg: "ERROR: Credenciales inválidas. 1" })
     }
     // Comparar la contraseña 
     const passOK = await compare(password, user.password);
@@ -34,13 +34,14 @@ userRutas.post("/login", async function(req, res) {
         const token = sign(
             {
                 usuario: user.documento,
-                rol: user.perfil
+                rol: user.perfil,
+                nombre: user.nombre
             },
             process.env.JWT_SECRET_KEY
         )
-        return res.status(200).json({ estado: "ok", msg: "Logueado", token });
+        return res.status(200).json({ estado: "ok", msg: "Logueado", token, url:"/inicio" });
     }
-    return res.status(401).json({ estado: "error", msg: "ERROR: Credenciales inválidas 2" });
+    return res.status(401).json({ estado: "error", msg: "ERROR: Credenciales inválidas. 2" });
     // Dar/denegar acceso
 });
 
