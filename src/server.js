@@ -1,5 +1,6 @@
 //npm init -y
 //npm install @babel/cli @babel/core @babel/node @babel/preset-env --save-dev
+//npm install -g @babel/core @babel/cli
 //npm install express --save
 //npm run build && node ./build/server.jsclear
 //npm install cors --save
