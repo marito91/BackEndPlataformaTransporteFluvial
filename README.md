@@ -1,6 +1,6 @@
 # BackEndPlataformaTransporteFluvial
 
-This code serves as the backend side for the "Plataforma Transporte Fluvial" project donde in React.
+This code serves as the backend side for the "Plataforma Transporte Fluvial" project done in React.
 
 This project was written in Node.js/Express and connects to a MongoDB which stores all of the JSON information regarding the users, ports, and routes that are organized for this website to work.
 
